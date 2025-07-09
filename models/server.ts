@@ -5,14 +5,14 @@ import cors from 'cors';
 
 class Server {
     private app: Application;
-    private port: string;
+    private port: number;
     private apiPaths = {
         agent: '/api/agent'
     }
 
     constructor(){
         this.app = express();
-        this.port = process.env.PORT || '8000';
+        this.port = process.env.PORT? Number(process.env.PORT): 8080;
 
         this.middleware();
         this.routes();
