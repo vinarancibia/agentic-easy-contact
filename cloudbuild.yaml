@@ -1,0 +1,10 @@
+steps:
+  # Instala las dependencias
+  - name: 'gcr.io/cloud-builders/npm'
+    args: ['install']
+
+  # Ejecuta npm start (que ejecuta build y luego arranca app.js)
+  - name: 'gcr.io/cloud-builders/npm'
+    args: ['start']
+
+timeout: '900s'  # Opcional, para builds largos
