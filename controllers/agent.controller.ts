@@ -7,6 +7,7 @@ export const chatAgent = async (req: Request, res: Response) => {
 
     console.log("length: ",messages.length);
     console.log("messages: ",messages[messages.length - 1].content);
+    console.log("message sin S: ",message);
 
 
     if (!message) {
