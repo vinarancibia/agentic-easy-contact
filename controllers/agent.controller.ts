@@ -3,9 +3,13 @@ import agentMaria from "../agents/maria";
 
 
 export const chatAgent = async (req: Request, res: Response) => {
-    const { message } = req.body;
-    console.log("Aqui esta el body desde easycontact",req.body);
-
+    const { message, messages,  conversation, message_type, content, attachments} = req.body;
+    
+    console.log("messages: ",messages);
+    console.log("conversation: ",conversation);
+    console.log("message_type: ",message_type);
+    console.log("content: ",content);
+    console.log("attachments: ",attachments);
 
     if (!message) {
         res.json({ msg: 'Por favor, envia un mensaje con la sintaxis correcta.' });
