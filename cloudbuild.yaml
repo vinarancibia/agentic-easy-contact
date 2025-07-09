@@ -5,6 +5,6 @@ steps:
 
   # Ejecuta npm start (que ejecuta build y luego arranca app.js)
   - name: 'gcr.io/cloud-builders/npm'
-    args: ['start']
+    args: ['run','build']
 
 timeout: '900s'  # Opcional, para builds largos
