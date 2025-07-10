@@ -15,6 +15,8 @@ export const chatAgent = async (req: Request, res: Response) => {
             { configurable: { thread_id: conversationId.toString() } }
         );
         const message = result.messages[result.messages.length - 1].content as string;
+
+        console.log(message)
         
         await sendMessage({accountId, conversationId, message});
     }
