@@ -1,4 +1,5 @@
 //* Al mandar un mensaje al agente, el mismo llega atraves del body de la siguiente manera
+//? Mas info: https://developers.chatwoot.com/api-reference/messages/create-new-message?playground=open
 
 const requestChat = {
     account: { id: 3, name: 'Control Facilito' },
@@ -54,8 +55,8 @@ const requestChat = {
     created_at: '2025-07-10T15:36:22.262Z',
     id: 77287,
     inbox: { id: 58, name: 'Development test' },
-    message_type: 'incoming',
-    private: false,
+    message_type: 'incoming', // Especifica si el mensaje es de entrada (outgoing) o de salida (incoming)
+    private: false, // Bandera para identificar si es una nota privada
     sender: {
         account: { id: 3, name: 'Control Facilito' },
         additional_attributes: {},
