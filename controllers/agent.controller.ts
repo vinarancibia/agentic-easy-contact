@@ -5,9 +5,9 @@ import agentMaria from "../agents/maria";
 export const chatAgent = async (req: Request, res: Response) => {
     const { message, messages,  data} = req.body;
 
-    console.log("------- DATA -------");
-    console.log(data);
-    console.log("------- DATA -------");
+    console.log("<------------------------- BODY ---------------------------->");
+    console.log(req.body);
+    console.log(">------------------------- BODY ----------------------------<");
 
 
     // if (!message) {
