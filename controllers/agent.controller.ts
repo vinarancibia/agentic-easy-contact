@@ -7,6 +7,7 @@ export const chatAgent = async (req: Request, res: Response) => {
     const { account, conversation, message_type, content, content_type } = req.body;
     const accountId = parseInt(account.id);
     const conversationId = parseInt(conversation.id);
+    console.log('Prueba...')
 
     if (message_type === 'incoming') {
         const result = await agentMaria.invoke(
