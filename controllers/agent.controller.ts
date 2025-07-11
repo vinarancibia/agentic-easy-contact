@@ -2,11 +2,13 @@ import { Request, Response } from "express";
 import agentMaria from "../agents/maria";
 import { sendMessageToChat } from "../helpers/message";
 import { ContentStore } from "../interfaces/message";
+import { monitorWebHook } from "../helpers/webhook";
 
 const contentStore: ContentStore = {};
 
 export const chatMaria = async (req: Request, res: Response) => {
     const { account, conversation, message_type, content } = req.body;
+    await monitorWebHook(req.body);
     const accountId = parseInt(account.id);
     const conversationId = parseInt(conversation.id);
     const key = `${accountId}:${conversationId}`;
