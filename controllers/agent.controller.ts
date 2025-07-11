@@ -22,12 +22,12 @@ export const chatMaria = async (req: Request, res: Response) => {
                 { configurable: { thread_id: conversationId.toString() } }
             );
             const message = result.messages[result.messages.length - 1].content as string;
-            // await sendMessageToChat({accountId, conversationId, message});
+            await sendMessageToChat({accountId, conversationId, message});
         
             console.log(`💬(${key}):`, contentStore[key].content);
             console.log("🤖:", message);
             contentStore[key].content = '';
-        }, 5000);
+        }, 3000);
         res.json({ message_type: 'incoming' });
     }else res.json({ message_type: 'outgoing' });
 }
