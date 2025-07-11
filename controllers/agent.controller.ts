@@ -5,7 +5,7 @@ import { ContentStore } from "../interfaces/message";
 
 const contentStore: ContentStore = {};
 
-export const chatAgent = async (req: Request, res: Response) => {
+export const chatMaria = async (req: Request, res: Response) => {
     const { account, conversation, message_type, content } = req.body;
     const accountId = parseInt(account.id);
     const conversationId = parseInt(conversation.id);
@@ -22,10 +22,11 @@ export const chatAgent = async (req: Request, res: Response) => {
                 { configurable: { thread_id: conversationId.toString() } }
             );
             const message = result.messages[result.messages.length - 1].content as string;
-            await sendMessageToChat({accountId, conversationId, message});
-
+            // await sendMessageToChat({accountId, conversationId, message});
+        
             console.log(`💬(${key}):`, contentStore[key].content);
             console.log("🤖:", message);
+            contentStore[key].content = '';
         }, 5000);
         res.json({ message_type: 'incoming' });
     }else res.json({ message_type: 'outgoing' });
