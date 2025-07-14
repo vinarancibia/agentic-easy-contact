@@ -8,7 +8,7 @@ const contentStore: ContentStore = {};
 
 export const chatMaria = async (req: Request, res: Response) => {
     const {accountId, conversationId, messageType, content} = await requestFilter(req.body);
-    await monitorWebHook(req.body);
+    // await monitorWebHook(req.body);
     const key = `${accountId}:${conversationId}`;
 
     if (messageType === 'incoming') {
@@ -25,8 +25,8 @@ export const chatMaria = async (req: Request, res: Response) => {
                 } }
             );
             const message = result.messages[result.messages.length - 1].content as string;
-            const {imageUrl} = result.structuredResponse;
-            await sendMessage({accountId, conversationId, message, fileUrl: imageUrl});
+            // const {imageUrl} = result.structuredResponse;
+            // await sendMessage({accountId, conversationId, message});
 
             console.log(`💬(${key}):`, contentStore[key].content);
             console.log("🤖:", message);

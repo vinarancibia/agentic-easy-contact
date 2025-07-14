@@ -2,44 +2,92 @@ import { z } from 'zod';
 import { tool } from '@langchain/core/tools';
 import fs from 'fs';
 import path from 'path';
+import { sendFile } from '../helpers/message';
 
 export const consultCatalogTool = tool(
     async (input, config) => {
-        const filePath = path.join(__dirname, '..', 'test', 'catalogo-autos.json');
-        const jsonString: string = fs.readFileSync(filePath, 'utf8');
+        console.log('<------------ consultCodeCatalogTool ------------>');
+        const filePath = path.join(__dirname, "..", "test", "catalogo-autos.json");
+        const filesData = JSON.parse(fs.readFileSync(filePath, "utf8"));
 
-        return jsonString;
+        if (Array.isArray(filesData)) { // Se filtran los campos
+            const data = filesData.map(d => ({
+                codigo: d.codigo,
+                nombre: d.nombre,
+                marca: d.marca,
+                modelo: d.modelo,
+                descripcion: d.descripcion,
+                precio: d.precio,
+                disponible: d.disponible
+            }))
+
+            return JSON.stringify(data);
+        }
+        return 'Aun no tengo articulos en el catalogo';
     },
     {
         name: 'consult-catalog',
         description: `Usa esta herramienta para consultar el catalogo de autos que tienes a disposicion. Este catalogo contiene: 
-        codigo = El codigo o identificador del auto,
+        codigo = el codigo del auto (No se debe mostrar al usuario, solo usa este codigo cuando vayas a usar otra herramienta para buscar algo especifico del auto),
         nombre = El nombre del auto,
         marca = La marca del auto,
         modelo = El anio de fabricacion del auto,
         descripcion = Una breve descripcion del auto,
         precio = Precio en dolares americanos (USD),
-        imagen = Url de la imagen del auto,
-        disponible = Cantidad de autos de este tipo en disposicion para su venta
-        Ten en cuenta que si te preguntan sobre los autos disponibles que tienes tu respuesta debe ser breve, es decir, no des mucho detalle, solo menciona la marca, nombre del auto y su modelo, de los que tengas a disposicion, por ejemplo: 'Ford-EcoSport Titanium modelo 2022'. Si el ususario te pregunta sobre el precio daselo de forma breve, por ejemplo: 'El EcoSport Titanium tiene un precio de 18500 Bs'. Y si te pregunta sobre la cantidad disponible que tienes no le digas la cantidad exacta, preguntale cuantos necesita y dile si tenemos o no esa cantidad. Por ningun motivo compartas el url en tu respuesta.
+        disponible = Cantidad de autos de este tipo en disposicion para su venta.
+
+        Ten en cuenta que si te preguntan sobre los autos disponibles que tienes tu respuesta debe ser breve, es decir, no des mucho detalle, solo menciona la marca, nombre del auto y el modelo, de los que tengas a disposicion, por ejemplo: 'Ford-EcoSport Titanium modelo 2022'. Si el ususario te pregunta sobre el precio daselo de forma breve, por ejemplo: 'El EcoSport Titanium tiene un precio de 18500 USD'. Y si te pregunta sobre la cantidad disponible que tienes no le digas la cantidad exacta, preguntale cuantos necesita y dile si tenemos o no esa cantidad. Por ningun motivo compartas el url en tu respuesta.
         `
+    }
+)
+
+export const consultCodeCatalogTool = tool(
+    async (input, config) => {
+        console.log('<------------ consultCodeCatalogTool ------------>');
+        const filePath = path.join(__dirname, "..", "test", "catalogo-autos.json");
+        const filesData = JSON.parse(fs.readFileSync(filePath, "utf8"));
+
+
+        if (Array.isArray(filesData)) {
+            const data = filesData.map(d => ({
+                codigo: d.codigo,
+                nombre: d.nombre
+            }))
+
+            return JSON.stringify(data);
+        }
+        return 'Aun no tengo articulos en el catalogo';
+    },
+    {
+        name: 'consult-code',
+        description: `Usa esta herramienta para obtener todos los codigos de los autos`
     }
 )
 
 export const searchImageCatalogTool = tool(
     async (input, config) => {
+        console.log('<------------- searchImageCatalogTool ----------->');
         const { codigo } = input;
-        const autosFilePath = path.join(__dirname, "..", "test", "autos.json");
-        const autosData = JSON.parse(fs.readFileSync(autosFilePath, "utf8"));
-        const auto = autosData.find((a: any) => a.codigo === codigo);
-        console.log(auto)
+        const { accountId, conversationId } = config.configurable;
 
-        if (auto) return `Encontré el auto que buscas: ${auto.nombre} ${auto.marca}, modelo ${auto.modelo}.`;
-        else return  'Lo siento, no encontre la imagen del auto.';
+        const filePath = path.join(__dirname, "..", "test", "catalogo-autos.json");
+        const autosData = JSON.parse(fs.readFileSync(filePath, "utf8"));
+        const auto = autosData.find((a: any) =>
+            codigo.toLocaleLowerCase().includes(a.codigo.toLocaleLowerCase())
+        );
+
+
+        if (auto) {
+            await sendFile({ accountId, conversationId, fileUrl: auto.imagen });
+            return `Encontré el auto que buscas: ${auto.nombre} ${auto.marca}, modelo ${auto.modelo}.`
+        }
+        else{
+            return 'Lo siento, no encontre la imagen del auto.';
+        }
     },
     {
         name: 'search-image',
-        description: 'Usa esta herramienta para buscar la imagen de uno de los autos que se encuentran en el catalogo. Pero solo mencionale el nombre del auto, su marca y modelo, nada mas.',
+        description: 'Usa esta herramienta para buscar la imagen de un auto usando el codigo que tiene en el catalogo o nombre como argumento. Si encuentras el auto que se esta dile que lograste encontrar el auto y mencionale su nombre, marca y modelo, nada mas. La imagen se mandara automaticamente, asi que no tienes que mecionar eso. Si el auto no se encuentra solamete dile qe aun no cuentas con una imagen de ese auto.',
         schema: z.object({
             codigo: z.string().describe('Codigo del auto que esta en el catalogo')
         })

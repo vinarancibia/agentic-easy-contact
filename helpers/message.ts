@@ -9,7 +9,6 @@ type SendMessageProp = {
     accountId: number;
     conversationId: number
     message: string;
-    fileUrl?: string;
 }
 
 type SendFileProp = {
@@ -25,31 +24,13 @@ type RequestFilterReturn = {
     messageType: 'incoming' | 'outgoing'
 }
 
-export async function sendMessage({ accountId, conversationId, message, fileUrl }: SendMessageProp) {
-    const tmpDir = path.join(__dirname, '../tmp'); // Carpeta para archivos temporales.
+export async function sendMessage({ accountId, conversationId, message }: SendMessageProp) {
     const url = `https://easycontact.top/api/v1/accounts/${accountId}/conversations/${conversationId}/messages`;
     const form = new FormData();
-
 
     form.append('message_type', 'outgoing');
     form.append('content_type', 'text');
     form.append('content', message);
-
-    if (fileUrl && fileUrl.trim() !== '') {
-        const fileExtension = path.extname(fileUrl).split('?')[0]; // Maneja URLs con query params
-        const fileName = `downloaded-${uuidv4()}${fileExtension}`;
-        const filePath = path.join(tmpDir, fileName);
-
-        const response = await axios.get(fileUrl, { responseType: 'stream' });
-        const writer = fs.createWriteStream(filePath);
-
-        await new Promise<void>((resolve, reject) => {
-            response.data.pipe(writer);
-            writer.on('finish', resolve);
-            writer.on('error', reject);
-        });
-        form.append('attachments[]', fs.createReadStream(filePath), fileName);
-    }
 
     if (url) {
         await axios.post(
@@ -63,43 +44,40 @@ export async function sendMessage({ accountId, conversationId, message, fileUrl 
     }
 }
 
-// export async function sendFileToChat({ accountId, conversationId, fileUrl }: SendMessageProp) {
-//     const tmpDir = path.join(__dirname, '../tmp'); // Carpeta para archivos temporales.
-//     const url = `https://easycontact.top/api/v1/accounts/${accountId}/conversations/${conversationId}/messages`;
-//     const form = new FormData();
+export async function sendFile({ accountId, conversationId, fileUrl }: SendFileProp) {
+    const tmpDir = path.join(__dirname, '../tmp'); // Carpeta para archivos temporales.
+    const url = `https://easycontact.top/api/v1/accounts/${accountId}/conversations/${conversationId}/messages`;
+    const form = new FormData();
 
+    form.append('message_type', 'outgoing');
+    form.append('content_type', 'text');
+    form.append('content', '');
 
-//     form.append('message_type', 'outgoing');
-//     form.append('content_type', 'text');
-//     form.append('content', message);
+    const fileExtension = path.extname(fileUrl).split('?')[0];
+    const fileName = `file-${uuidv4()}${fileExtension}`;
+    const filePath = path.join(tmpDir, fileName);
 
-//     if (fileUrl && fileUrl.trim() !== '') {
-//         const fileExtension = path.extname(fileUrl).split('?')[0]; // Maneja URLs con query params
-//         const fileName = `downloaded-${uuidv4()}${fileExtension}`;
-//         const filePath = path.join(tmpDir, fileName);
+    const response = await axios.get(fileUrl, { responseType: 'stream' });
+    const writer = fs.createWriteStream(filePath);
 
-//         const response = await axios.get(fileUrl, { responseType: 'stream' });
-//         const writer = fs.createWriteStream(filePath);
+    await new Promise<void>((resolve, reject) => {
+        response.data.pipe(writer);
+        writer.on('finish', resolve);
+        writer.on('error', reject);
+    });
+    form.append('attachments[]', fs.createReadStream(filePath), fileName);
 
-//         await new Promise<void>((resolve, reject) => {
-//             response.data.pipe(writer);
-//             writer.on('finish', resolve);
-//             writer.on('error', reject);
-//         });
-//         form.append('attachments[]', fs.createReadStream(filePath), fileName);
-//     }
-
-//     if (url) {
-//         await axios.post(
-//             url,
-//             form, {
-//             headers: {
-//                 'Content-Type': 'multipart/form-data',
-//                 'api_access_token': 'L5G12gAfw5ZAGPMyT6KrJhvN'
-//             }
-//         })
-//     }
-// }
+    if (url) {
+        await axios.post(
+            url,
+            form, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                'api_access_token': 'L5G12gAfw5ZAGPMyT6KrJhvN'
+            }
+        })
+    }
+}
 
 
 export async function requestFilter(body: { [key: string]: any }): Promise<RequestFilterReturn> {
