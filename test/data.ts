@@ -73,3 +73,4 @@ const requestChat = {
     source_id: null,
     event: 'message_created'
 }
+

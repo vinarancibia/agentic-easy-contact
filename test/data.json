@@ -1,0 +1,173 @@
+{
+    "account": {
+        "id": 3,
+        "name": "Control Facilito"
+    },
+    "additional_attributes": {},
+    "content_attributes": {},
+    "content_type": "text",
+    "content": null,
+    "active_agent_bot": true,
+    "conversation": {
+        "additional_attributes": {
+            "browser": {
+                "device_name": "Unknown",
+                "browser_name": "Chrome",
+                "platform_name": "Windows",
+                "browser_version": "137.0.0.0",
+                "platform_version": "10.0"
+            },
+            "referer": null,
+            "initiated_at": {
+                "timestamp": "Tue Jun 24 2025 15:12:23 GMT-0400 (Bolivia Time)"
+            },
+            "browser_language": "en"
+        },
+        "active_agent_bot": true,
+        "can_reply": true,
+        "channel": "Channel::WebWidget",
+        "contact_inbox": {
+            "id": 62208,
+            "contact_id": 52961,
+            "inbox_id": 58,
+            "source_id": "85e9de6c-7a80-40e7-a739-4e098bb7bb97",
+            "created_at": "2025-06-24T19:12:02.254Z",
+            "updated_at": "2025-06-24T19:12:02.254Z",
+            "hmac_verified": false,
+            "pubsub_token": "XbEh26e7xeSHGkuFmYeokAtQ"
+        },
+        "id": 13108,
+        "kanban_state": {
+            "id": null,
+            "name": null,
+            "color": null,
+            "order": null
+        },
+        "inbox_id": 58,
+        "messages": [
+            {
+                "id": 78592,
+                "content": null,
+                "account_id": 3,
+                "inbox_id": 58,
+                "conversation_id": 13108,
+                "message_type": 1,
+                "created_at": 1752249574,
+                "updated_at": "2025-07-11T15:59:36.179Z",
+                "private": false,
+                "status": "read",
+                "source_id": null,
+                "content_type": "text",
+                "content_attributes": {},
+                "sender_type": "User",
+                "sender_id": 36,
+                "external_source_ids": {},
+                "additional_attributes": {},
+                "processed_message_content": null,
+                "sentiment": {},
+                "conversation": {
+                    "assignee_id": null,
+                    "unread_count": 0,
+                    "last_activity_at": 1752249574,
+                    "contact_inbox": {
+                        "source_id": "85e9de6c-7a80-40e7-a739-4e098bb7bb97"
+                    }
+                },
+                "conversations_state_name": "soporte",
+                "conversations_state": {
+                    "name": "soporte",
+                    "color": "#F88C8C",
+                    "description": "Si la conversación se centra en resolver problemas técnicos, brindar asistencia o resolver dudas sobre un producto o servicio."
+                },
+                "kanban_state": {
+                    "id": null,
+                    "name": null,
+                    "color": null,
+                    "order": null
+                },
+                "attachments": [
+                    {
+                        "id": 3059,
+                        "message_id": 78592,
+                        "file_type": "audio",
+                        "account_id": 3,
+                        "extension": null,
+                        "data_url": "https://www.easycontact.top/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBZ3dNIiwiZXhwIjpudWxsLCJwdXIiOiJibG9iX2lkIn19--44b02f28a25c99457f76ad4aec8bdf00600ae5fe/1752249578021.wav",
+                        "thumb_url": "",
+                        "file_size": 452396,
+                        "width": null,
+                        "height": null
+                    }
+                ],
+                "sender": {
+                    "id": 36,
+                    "name": "Rodrigo",
+                    "available_name": "Rodrigo",
+                    "avatar_url": "",
+                    "type": "user",
+                    "availability_status": null,
+                    "thumbnail": ""
+                }
+            }
+        ],
+        "labels": [],
+        "meta": {
+            "sender": {
+                "additional_attributes": {},
+                "custom_attributes": {},
+                "email": null,
+                "id": 52961,
+                "identifier": null,
+                "name": "empty-haze-989",
+                "phone_number": null,
+                "thumbnail": "",
+                "type": "contact"
+            },
+            "assignee": null,
+            "team": null,
+            "hmac_verified": false
+        },
+        "status": "pending",
+        "custom_attributes": {},
+        "snoozed_until": null,
+        "unread_count": 0,
+        "first_reply_created_at": "2025-06-24T19:12:14.382Z",
+        "priority": null,
+        "waiting_since": 0,
+        "agent_last_seen_at": 1752249574,
+        "contact_last_seen_at": 1752249575,
+        "last_activity_at": 1752249574,
+        "timestamp": 1752249574,
+        "created_at": 1750792329
+    },
+    "created_at": "2025-07-11T15:59:34.875Z",
+    "id": 78592,
+    "inbox": {
+        "id": 58,
+        "name": "Development test"
+    },
+    "message_type": "outgoing",
+    "private": false,
+    "sender": {
+        "id": 36,
+        "name": "Rodrigo",
+        "email": "rvr.awc@gmail.com",
+        "type": "user"
+    },
+    "source_id": null,
+    "attachments": [
+        {
+            "id": 3059,
+            "message_id": 78592,
+            "file_type": "audio",
+            "account_id": 3,
+            "extension": null,
+            "data_url": "https://www.easycontact.top/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBZ3dNIiwiZXhwIjpudWxsLCJwdXIiOiJibG9iX2lkIn19--44b02f28a25c99457f76ad4aec8bdf00600ae5fe/1752249578021.wav",
+            "thumb_url": "",
+            "file_size": 452396,
+            "width": null,
+            "height": null
+        }
+    ],
+    "event": "message_updated"
+}

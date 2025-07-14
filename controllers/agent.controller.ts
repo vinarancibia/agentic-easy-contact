@@ -1,33 +1,41 @@
 import { Request, Response } from "express";
 import agentMaria from "../agents/maria";
-import { sendMessageToChat } from "../helpers/message";
+import { requestFilter, sendMessage } from "../helpers/message";
 import { ContentStore } from "../interfaces/message";
 import { monitorWebHook } from "../helpers/webhook";
 
 const contentStore: ContentStore = {};
 
 export const chatMaria = async (req: Request, res: Response) => {
-    const { account, conversation, message_type, content } = req.body;
+    const {accountId, conversationId, messageType, content} = await requestFilter(req.body);
     await monitorWebHook(req.body);
-    const accountId = parseInt(account.id);
-    const conversationId = parseInt(conversation.id);
     const key = `${accountId}:${conversationId}`;
 
-    if (message_type === 'incoming') {
-        // El content se carga en el contentStore e inicia el temporizador, este termina cuando dejan de llegar mensajes del mismo chat
+    if (messageType === 'incoming') {
         if (contentStore[key]) contentStore[key].content += ` ${content}`;
         else contentStore[key] = { content };
         if (contentStore[key].timer) clearTimeout(contentStore[key].timer);
         contentStore[key].timer = setTimeout(async() => {
             const result = await agentMaria.invoke(
                 { messages: [{ role: "user", content: contentStore[key].content }] },
-                { configurable: { thread_id: conversationId.toString() } }
+                { configurable: { 
+                    thread_id: conversationId,
+                    accountId,
+                    conversationId
+                } }
             );
             const message = result.messages[result.messages.length - 1].content as string;
-            await sendMessageToChat({accountId, conversationId, message});
-        
+            const {imageUrl} = result.structuredResponse;
+            await sendMessage({accountId, conversationId, message, fileUrl: imageUrl});
+
             console.log(`💬(${key}):`, contentStore[key].content);
             console.log("🤖:", message);
+
+            
+            // console.log('<------------ structuredResponse ---------------->')
+            // console.log(imageUrl)
+            // console.log('<------------ structuredResponse ---------------->')
+
             contentStore[key].content = '';
         }, 3000);
         res.json({ message_type: 'incoming' });
