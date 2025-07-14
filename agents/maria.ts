@@ -17,7 +17,7 @@ const agentMaria = createReactAgent({
     tools:
         [
             userInfoTool,
-            contextMessageTool,
+            // contextMessageTool,
             consultCatalogTool,
             searchImageCatalogTool,
             consultCodeCatalogTool
