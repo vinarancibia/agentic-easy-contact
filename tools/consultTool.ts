@@ -82,7 +82,7 @@ export const consultImageCatalogTool = tool(
     },
     {
         name: 'consult-image',
-        description: 'Usa esta herramienta para buscar la imagen de un auto usando el codigo que tiene en el catalogo. Si encuentras el auto que se esta dile que lograste encontrar el auto y mencionale su nombre, marca y modelo, nada mas. La imagen se mandara automaticamente, asi que no tienes que mecionar eso. Si el auto no se encuentra solamete dile qe aun no cuentas con una imagen de ese auto.',
+        description: 'Usa esta herramienta para buscar la imagen de un auto usando el codigo que tiene en el catalogo. Si encuentras el auto, dile que lograste encontrar el auto y mencionale su nombre, marca y modelo, no menciones agregues ningun link o dato adicional.',
         schema: z.object({
             codigo: z.string().describe('Codigo del auto que esta en el catalogo')
         })
