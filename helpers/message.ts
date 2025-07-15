@@ -59,18 +59,19 @@ export async function sendFile({ accountId, conversationId, fileUrl }: SendFileP
     const fileName = `file-${uuidv4()}${fileExtension}`;
     const filePath = path.join(tmpDir, fileName);
 
-    const response = await axios.get(fileUrl, { responseType: 'stream' });
-    const writer = fs.createWriteStream(filePath);
-
-    await new Promise<void>((resolve, reject) => {
-        response.data.pipe(writer);
-        writer.on('finish', resolve);
-        writer.on('error', reject);
-    });
-    form.append('attachments[]', fs.createReadStream(filePath), fileName);
-
+    
     if (url) {
         try {
+            const response = await axios.get(fileUrl, { responseType: 'stream' });
+            const writer = fs.createWriteStream(filePath);
+        
+            await new Promise<void>((resolve, reject) => {
+                response.data.pipe(writer);
+                writer.on('finish', resolve);
+                writer.on('error', reject);
+            });
+            form.append('attachments[]', fs.createReadStream(filePath), fileName);
+            
             await axios.post(
                 url,
                 form, {
@@ -81,9 +82,11 @@ export async function sendFile({ accountId, conversationId, fileUrl }: SendFileP
             })
             console.log('✅ Se envio la imagen con exito '); 
         } catch (error) {
-            console.log('❌ Error al enviar la imagen ');
+            console.log('❌ Error al enviar el archivo ');
             console.log(error)       
         }
+    }else {
+        console.log('❌ No se pudo enviar el archivo por falta del URL de envio')
     }
 }
 
