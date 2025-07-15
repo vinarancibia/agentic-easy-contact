@@ -8,9 +8,6 @@ import { catalogAutosTest } from '../test/catalogo';
 export const consultCatalogTool = tool(
     async (input, config) => {
         console.log('<------------ consultCodeCatalogTool ------------>');
-        // const filePath = path.join(__dirname, "..", "test", "catalogo-autos.json");
-        // const filesData = JSON.parse(fs.readFileSync(filePath, "utf8"));
-
         const filesData = catalogAutosTest;
 
         if (filesData.length > 0) { // Se filtran los campos
@@ -47,12 +44,7 @@ export const consultCatalogTool = tool(
 export const consultCodeCatalogTool = tool(
     async (input, config) => {
         console.log('<------------ consultCodeCatalogTool ------------>');
-        // const filePath = path.join(__dirname, "..", "test", "catalogo-autos.json");
-        // const filesData = JSON.parse(fs.readFileSync(filePath, "utf8"));
-
         const filesData = catalogAutosTest;
-
-
         if (filesData.length > 0) {
             const data = filesData.map(d => ({
                 codigo: d.codigo,
@@ -69,20 +61,15 @@ export const consultCodeCatalogTool = tool(
     }
 )
 
-export const searchImageCatalogTool = tool(
+export const consultImageCatalogTool = tool(
     async (input, config) => {
         console.log('<------------- searchImageCatalogTool ----------->');
         const { codigo } = input;
+        console.log('CODIGO:',codigo)
         const { accountId, conversationId } = config.configurable;
 
-        // const filePath = path.join(__dirname, "..", "test", "catalogo-autos.json");
-        // const autosData = JSON.parse(fs.readFileSync(filePath, "utf8"));
-
         const filesData = catalogAutosTest;
-        const auto = filesData.find((a: any) =>
-            codigo.toLocaleLowerCase().includes(a.codigo.toLocaleLowerCase())
-        );
-
+        const auto = filesData.find((a: any) => codigo.toLocaleLowerCase() === a.codigo.toLocaleLowerCase());
 
         if (auto) {
             await sendFile({ accountId, conversationId, fileUrl: auto.imagen });
@@ -93,8 +80,8 @@ export const searchImageCatalogTool = tool(
         }
     },
     {
-        name: 'search-image',
-        description: 'Usa esta herramienta para buscar la imagen de un auto usando el codigo que tiene en el catalogo o nombre como argumento. Si encuentras el auto que se esta dile que lograste encontrar el auto y mencionale su nombre, marca y modelo, nada mas. La imagen se mandara automaticamente, asi que no tienes que mecionar eso. Si el auto no se encuentra solamete dile qe aun no cuentas con una imagen de ese auto.',
+        name: 'consult-image',
+        description: 'Usa esta herramienta para buscar la imagen de un auto usando el codigo que tiene en el catalogo. Si encuentras el auto que se esta dile que lograste encontrar el auto y mencionale su nombre, marca y modelo, nada mas. La imagen se mandara automaticamente, asi que no tienes que mecionar eso. Si el auto no se encuentra solamete dile qe aun no cuentas con una imagen de ese auto.',
         schema: z.object({
             codigo: z.string().describe('Codigo del auto que esta en el catalogo')
         })
