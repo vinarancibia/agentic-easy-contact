@@ -68,14 +68,20 @@ export async function sendFile({ accountId, conversationId, fileUrl }: SendFileP
     form.append('attachments[]', fs.createReadStream(filePath), fileName);
 
     if (url) {
-        await axios.post(
-            url,
-            form, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-                'api_access_token': 'L5G12gAfw5ZAGPMyT6KrJhvN'
-            }
-        })
+        try {
+            await axios.post(
+                url,
+                form, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'api_access_token': 'L5G12gAfw5ZAGPMyT6KrJhvN'
+                }
+            })
+            console.log('✅ Se envio la imagen con exito '); 
+        } catch (error) {
+            console.log('⚠️ Error al enviar la imagen ');
+            console.log(error)       
+        }
     }
 }
 
