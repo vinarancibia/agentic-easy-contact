@@ -48,6 +48,9 @@ export async function sendFile({ accountId, conversationId, fileUrl }: SendFileP
     console.log('<------------- sendFile ----------->');
     console.log('FILEURL: ', fileUrl);
     const tmpDir = path.join(__dirname, '../tmp'); // Carpeta para archivos temporales.
+    if (!fs.existsSync(tmpDir)) {
+        fs.mkdirSync(tmpDir, { recursive: true });
+    }
     const url = `https://easycontact.top/api/v1/accounts/${accountId}/conversations/${conversationId}/messages`;
     const form = new FormData();
 
@@ -59,19 +62,19 @@ export async function sendFile({ accountId, conversationId, fileUrl }: SendFileP
     const fileName = `file-${uuidv4()}${fileExtension}`;
     const filePath = path.join(tmpDir, fileName);
 
-    
+
     if (url) {
         try {
             const response = await axios.get(fileUrl, { responseType: 'stream' });
             const writer = fs.createWriteStream(filePath);
-        
+
             await new Promise<void>((resolve, reject) => {
                 response.data.pipe(writer);
                 writer.on('finish', resolve);
                 writer.on('error', reject);
             });
             form.append('attachments[]', fs.createReadStream(filePath), fileName);
-            
+
             await axios.post(
                 url,
                 form, {
@@ -80,12 +83,12 @@ export async function sendFile({ accountId, conversationId, fileUrl }: SendFileP
                     'api_access_token': 'L5G12gAfw5ZAGPMyT6KrJhvN'
                 }
             })
-            console.log('✅ Se envio la imagen con exito '); 
+            console.log('✅ Se envio la imagen con exito ');
         } catch (error) {
             console.log('❌ Error al enviar el archivo ');
-            console.log(error)       
+            console.log(error)
         }
-    }else {
+    } else {
         console.log('❌ No se pudo enviar el archivo por falta del URL de envio')
     }
 }
