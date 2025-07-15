@@ -45,6 +45,7 @@ export async function sendMessage({ accountId, conversationId, message }: SendMe
 }
 
 export async function sendFile({ accountId, conversationId, fileUrl }: SendFileProp) {
+    console.log('<------------- sendFile ----------->');
     const tmpDir = path.join(__dirname, '../tmp'); // Carpeta para archivos temporales.
     const url = `https://easycontact.top/api/v1/accounts/${accountId}/conversations/${conversationId}/messages`;
     const form = new FormData();
@@ -79,7 +80,7 @@ export async function sendFile({ accountId, conversationId, fileUrl }: SendFileP
             })
             console.log('✅ Se envio la imagen con exito '); 
         } catch (error) {
-            console.log('⚠️ Error al enviar la imagen ');
+            console.log('❌ Error al enviar la imagen ');
             console.log(error)       
         }
     }

@@ -28,6 +28,7 @@ export const contextMessageTool = tool(
             
         } catch (error) {
             console.error('❌ Error al obtener contexto:');
+            console.log(error);
             return 'Sin contexto'
         }
     },
