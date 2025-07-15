@@ -46,6 +46,7 @@ export async function sendMessage({ accountId, conversationId, message }: SendMe
 
 export async function sendFile({ accountId, conversationId, fileUrl }: SendFileProp) {
     console.log('<------------- sendFile ----------->');
+    console.log('FILEURL: ', fileUrl);
     const tmpDir = path.join(__dirname, '../tmp'); // Carpeta para archivos temporales.
     const url = `https://easycontact.top/api/v1/accounts/${accountId}/conversations/${conversationId}/messages`;
     const form = new FormData();
@@ -85,7 +86,6 @@ export async function sendFile({ accountId, conversationId, fileUrl }: SendFileP
         }
     }
 }
-
 
 export async function requestFilter(body: { [key: string]: any }): Promise<RequestFilterReturn> {
     const { account, conversation, message_type, content, attachments } = body;
