@@ -27,7 +27,7 @@ export const consultCatalogTool = tool(
     },
     {
         name: 'consult-catalog',
-        description: `Usa esta herramienta para consultar el catalogo de autos que tienes a disposicion. Este catalogo contiene: 
+        description: `Usa esta herramienta para obtener la lista de los autos que tienes a disposicion. Este catalogo contiene: 
         codigo = el codigo del auto (No se debe mostrar al usuario, solo usa este codigo cuando vayas a usar otra herramienta para buscar algo especifico del auto),
         nombre = El nombre del auto,
         marca = La marca del auto,
@@ -35,7 +35,6 @@ export const consultCatalogTool = tool(
         descripcion = Una breve descripcion del auto,
         precio = Precio en dolares americanos (USD),
         disponible = Cantidad de autos de este tipo en disposicion para su venta.
-
         Ten en cuenta que si te preguntan sobre los autos disponibles que tienes tu respuesta debe ser breve, es decir, no des mucho detalle, solo menciona la marca, nombre del auto y el modelo, de los que tengas a disposicion, por ejemplo: 'Ford-EcoSport Titanium modelo 2022'. Si el ususario te pregunta sobre el precio daselo de forma breve, por ejemplo: 'El EcoSport Titanium tiene un precio de 18500 USD'. Y si te pregunta sobre la cantidad disponible que tienes no le digas la cantidad exacta, preguntale cuantos necesita y dile si tenemos o no esa cantidad. Por ningun motivo compartas el url en tu respuesta.
         `
     }
@@ -48,7 +47,9 @@ export const consultCodeCatalogTool = tool(
         if (filesData.length > 0) {
             const data = filesData.map(d => ({
                 codigo: d.codigo,
-                nombre: d.nombre
+                nombre: d.nombre,
+                marca: d.marca,
+                modelo: d.modelo
             }))
 
             return JSON.stringify(data);
@@ -57,7 +58,7 @@ export const consultCodeCatalogTool = tool(
     },
     {
         name: 'consult-code',
-        description: `Usa esta herramienta para obtener todos los codigos de los autos`
+        description: `Usa esta herramienta para obtener los datos de los autos, como el codigo, nombre, marca y modelo.`
     }
 )
 

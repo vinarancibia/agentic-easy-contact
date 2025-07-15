@@ -4,11 +4,6 @@ import { z } from 'zod';
 import dotenv from 'dotenv';
 dotenv.config();
 
-
-type HistoryProp = {
-    payload: Array<Record<string, any>>,
-    greatingsList: string[]
-}
 export const contextMessageTool = tool(
     async (input, config) => {
         console.log('<------------- contextMessageTool ----------->');
@@ -16,10 +11,37 @@ export const contextMessageTool = tool(
         const url = `https://easycontact.top/api/v1/accounts/${accountId}/conversations/${conversationId}/messages`;
         const apiAccessToken = process.env.API_ACCESS_TOKEN;
 
-        const history:HistoryProp = {
-            payload: [],
-            greatingsList: [
-                `¡Hola! 😊 Soy Carolina, asesora comercial de EasyContact. n
+        try {
+            const response = await axios.get(url, {
+                headers: {
+                    'api_access_token': apiAccessToken,
+                    'Content-Type': 'application/json'
+                }
+            })
+            const { payload }:{payload: Array<Record<string, any>>} = response.data;
+            let userMessages: string = '';
+            for (let i = 0; i < payload.length; i++) {
+                if(payload[i]?.sender?.type === 'contact')
+                userMessages += payload[i].content + '\n';
+            }
+            return userMessages;
+            
+        } catch (error) {
+            console.error('❌ Error al obtener contexto:');
+            return 'Sin contexto'
+        }
+    },
+    {
+        name: 'context-message',
+        description: "Usa esta herramienta para tener un contexto de la conversacion. Puedes identificar esto si el usuario te saluda con frases como 'hola', 'buenos días', 'buenas tardes', entre otras formas comunes de saludo. Usa su nombre para saludarlo y preguntale si aun necesita ayuda con algun asunto que haya quedado pendiente, por ejemplo: 'Hola Rodrigo, que gusto volver a hablar contigo 😊. ¿Aun estas buscando un teclado?'"
+    }
+)
+
+export const greetingsListTool = tool(
+    async (input, config) => {
+        console.log('<------------- greetingsListTool ----------->');
+        const list = [
+                `¡Hola! 😊 Soy Carolina, asesora comercial de EasyContact.
                 Estoy para ayudarte a entender cómo nuestra plataforma puede simplificar tu atención al cliente y ahorrarte tiempo desde el primer día.`,
                 `¡Hola! Soy Carolina, asesora en EasyContact 🚀  
                 Estoy para ayudarte a conocer cómo centralizar todos tus canales de atención y automatizar lo repetitivo con IA.`,
@@ -30,39 +52,15 @@ export const contextMessageTool = tool(
                 `¡Hola! Gracias por escribirnos 🙌 Soy Carolina, asesora de EasyContact.  
                 ¿Querés que te cuente cómo funciona y cómo podrías aprovecharlo en tu empresa?`
             ]
-        }
-        try {
-            const response = await axios.get(url, {
-                headers: {
-                    'api_access_token': apiAccessToken,
-                    'Content-Type': 'application/json'
-                }
-            })
-            const { payload }:{payload: Array<Record<string, any>>} = response.data;
-            history.payload = [...payload];
-        } catch (error) {
-            console.error('❌ Error al obtener contexto:');
-        }
-        return JSON.stringify(history);
+        const randomGreeting = list[Math.floor(Math.random() * list.length)];
+
+        return randomGreeting;
     },
     {
-        name: 'context-message',
-        description: `
-        Usa esta herramienta únicamente al detectar que la conversación está iniciando. Puedes identificar esto si el usuario te saluda con frases como "hola", "buenos días", "buenas tardes", entre otras formas comunes de saludo.
-        La herramienta te devolverá un JSON con la siguiente estructura:
-        1. payload: Es un arreglo de objetos que representa los mensajes anteriores de la conversación, este arreglo es la parte mas inportante de donde debes sacar la informacion para responder de forma personalizada.
-            Por ejemplo:
-            Si encuentras el nombre del usuario en uno de los mensajes anteriores (dicho por el propio usuario o por ti), salúdalo por su nombre.
-            Si el usuario habló antes de un problema o una duda y no quedó claro si se resolvió, pregúntale cómo le fue o si necesita más ayuda.
-            Si hay algún interés, preferencia o dato importante mencionado, retómalo en tu saludo para ofrecer una experiencia más cercana.
-            Ten en cuenta que cada mensaje cuenta con los siguientes campos:
-            - sender, dentro esta el type: si este "contact" significa que fue enviado por el usuario; si es "user", fue enviado por ti.
-            - content: es el contenido textual del mensaje.
-
-        2. greetingsList: Es una lista de posibles saludos.
-            ⚠️ Usala solamente si el payload está vacío o no fue posible recuperar el payload (por error o porque es la primera conversación), simplemente saluda de forma cordial usando aleatoriamente uno de los saludos incluidos en greetingsList, no debes usar siempre el mismo saludo.
-        `
+        name:'greetings-list',
+        description: 'Usa esta herramienta solamente cuando no tengas un contexto de la conversacio. Esta herramienta te dara un ejemplo de saludo que puedes usar'
     }
+
 )
 
 export const userInfoTool = tool(
