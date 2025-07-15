@@ -37,7 +37,7 @@ export const chatMaria = async (req: Request, res: Response) => {
             // console.log('<------------ structuredResponse ---------------->')
 
             contentStore[key].content = '';
-        }, 3000);
+        }, 5000);
         res.json({ message_type: 'incoming' });
     }else res.json({ message_type: 'outgoing' });
 }
