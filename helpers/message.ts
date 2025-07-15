@@ -4,6 +4,8 @@ import FormData from "form-data";
 import fs from 'fs';
 import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
+import dotenv from 'dotenv';
+dotenv.config();
 
 type SendMessageProp = {
     accountId: number;
@@ -23,6 +25,8 @@ type RequestFilterReturn = {
     content: string;
     messageType: 'incoming' | 'outgoing'
 }
+
+const apiAccessToken = process.env.API_ACCESS_TOKEN;
 
 export async function sendMessage({ accountId, conversationId, message }: SendMessageProp) {
     const url = `https://easycontact.top/api/v1/accounts/${accountId}/conversations/${conversationId}/messages`;
@@ -80,9 +84,10 @@ export async function sendFile({ accountId, conversationId, fileUrl }: SendFileP
                 form, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
-                    'api_access_token': 'L5G12gAfw5ZAGPMyT6KrJhvN'
+                    'api_access_token': apiAccessToken
                 }
             })
+            await fs.promises.unlink(filePath);
             console.log('✅ Se envio la imagen con exito ');
         } catch (error) {
             console.log('❌ Error al enviar el archivo ');

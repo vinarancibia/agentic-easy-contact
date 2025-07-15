@@ -34,7 +34,7 @@ export const contextMessageTool = tool(
     },
     {
         name: 'context-message',
-        description: "Usa esta herramienta para tener un contexto de la conversacion. Puedes identificar esto si el usuario te saluda con frases como 'hola', 'buenos días', 'buenas tardes', entre otras formas comunes de saludo. Usa solamente su nombre para saludarlo y de manera cordial. Por ejemplo: 'Hola Juan 😊, que gusto volver a hablar contigo ¿En que puedo ayudarte el dia de hoy?'"
+        description: "Esta herramienta proporciona el contexto histórico de la conversación con el usuario. Su único propósito es ayudar al agente a identificar el nombre del usuario si este se mencionó anteriormente, para poder saludarlo de forma personalizada. Por ejemplo: 'Hola Juan, qué gusto volver a hablar contigo. ¿En qué puedo ayudarte hoy?'. No debe usarse para responder preguntas pasadas ni continuar con temas anteriores, solo para generar un saludo cordial y personalizado al inicio de una nueva conversación."
     }
 )
 
