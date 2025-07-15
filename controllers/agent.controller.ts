@@ -25,7 +25,7 @@ export const chatMaria = async (req: Request, res: Response) => {
                 } }
             );
             const message = result.messages[result.messages.length - 1].content as string;
-            // await sendMessage({accountId, conversationId, message});
+            await sendMessage({accountId, conversationId, message});
             console.log(`💬(${key}):`, contentStore[key].content);
             console.log("🤖:", message);
             contentStore[key].content = '';
