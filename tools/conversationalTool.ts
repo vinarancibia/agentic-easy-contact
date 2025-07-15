@@ -34,7 +34,7 @@ export const contextMessageTool = tool(
     },
     {
         name: 'context-message',
-        description: "Esta herramienta proporciona el contexto histórico de la conversación con el usuario. Su único propósito es ayudar al agente a identificar el nombre del usuario si este se mencionó anteriormente, para poder saludarlo de forma personalizada. Por ejemplo: 'Hola Juan, qué gusto volver a hablar contigo. ¿En qué puedo ayudarte hoy?'. No debe usarse para responder preguntas pasadas ni continuar con temas anteriores, solo para generar un saludo cordial y personalizado al inicio de una nueva conversación."
+        description: "Usa esta herramienta solamente al inicio de la conversación para identificar únicamente nombre del usuario y saludarle de una forma personalizada, por ejemplo: 'Hola Juan 😊, que gusto volver a hablar contigo. En que puedo ayudarte el día de hoy'"
     }
 )
 
