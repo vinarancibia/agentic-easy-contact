@@ -69,9 +69,11 @@ export async function sendFile({ accountId, conversationId, fileUrl }: SendFileP
 
     if (url) {
         try {
+            console.log('🌐 Descargando archivo')
             const response = await axios.get(fileUrl, { responseType: 'stream' });
             const writer = fs.createWriteStream(filePath);
 
+            console.log('📂 Guardando archivo en tmp')
             await new Promise<void>((resolve, reject) => {
                 response.data.pipe(writer);
                 writer.on('finish', resolve);
@@ -79,6 +81,7 @@ export async function sendFile({ accountId, conversationId, fileUrl }: SendFileP
             });
             form.append('attachments[]', fs.createReadStream(filePath), fileName);
 
+            console.log('📨 Enviando el archivo al chat')
             await axios.post(
                 url,
                 form, {
@@ -87,8 +90,9 @@ export async function sendFile({ accountId, conversationId, fileUrl }: SendFileP
                     'api_access_token': apiAccessToken
                 }
             })
-            await fs.promises.unlink(filePath);
             console.log('✅ Se envio la imagen con exito ');
+            console.log('🗑️ Eliminando archivo de tmp')
+            await fs.promises.unlink(filePath);
         } catch (error) {
             console.log('❌ Error al enviar el archivo ');
             console.log(error)
