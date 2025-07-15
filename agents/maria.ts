@@ -1,7 +1,7 @@
 import { ChatOpenAI } from "@langchain/openai";
 import { createReactAgent } from "@langchain/langgraph/prebuilt"
 import { MemorySaver } from '@langchain/langgraph';
-import { contextMessageTool, greetingsListTool, userInfoTool } from "../tools/conversationalTool";
+import { contextMessageTool, getCurrentDateTimeTool, greetingsListTool, userInfoTool } from "../tools/conversationalTool";
 import { consultCatalogTool, consultCodeCatalogTool, consultImageCatalogTool } from "../tools/consultTool";
 import z from "zod";
 
@@ -132,8 +132,9 @@ const agentMaria = createReactAgent({
     llm,
     tools:
         [
-            userInfoTool,
+            // userInfoTool,
             contextMessageTool,
+            getCurrentDateTimeTool,
             greetingsListTool,
             consultCatalogTool,
             consultImageCatalogTool,

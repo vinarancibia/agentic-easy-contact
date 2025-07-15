@@ -1,6 +1,8 @@
 import { tool } from '@langchain/core/tools';
-import axios from 'axios';
 import { z } from 'zod';
+import { DateTime } from 'luxon';
+
+import axios from 'axios';
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -74,4 +76,17 @@ export const userInfoTool = tool(
         description: 'Usa esta herramienta cuando el usuario te pida su informacion.',
         schema: z.object({})
     }
+);
+
+export const getCurrentDateTimeTool = tool(
+  async () => {
+    console.log('<------------- contextMessageTool ----------->');
+    const now = DateTime.now().setZone('America/La_Paz');
+    return `La fecha y hora actual en Bolivia es: ${now.toFormat("dd 'de' LLLL yyyy, HH:mm:ss")}`;
+  },
+  {
+    name: 'get-current-datetime',
+    description: 'Devuelve la fecha y hora actual considerando la zona horaria de Bolivia (UTC-4).',
+    schema: z.object({})
+  }
 );
