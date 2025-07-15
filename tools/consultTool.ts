@@ -3,14 +3,17 @@ import { tool } from '@langchain/core/tools';
 import fs from 'fs';
 import path from 'path';
 import { sendFile } from '../helpers/message';
+import { catalogAutosTest } from '../test/catalogo';
 
 export const consultCatalogTool = tool(
     async (input, config) => {
         console.log('<------------ consultCodeCatalogTool ------------>');
-        const filePath = path.join(__dirname, "..", "test", "catalogo-autos.json");
-        const filesData = JSON.parse(fs.readFileSync(filePath, "utf8"));
+        // const filePath = path.join(__dirname, "..", "test", "catalogo-autos.json");
+        // const filesData = JSON.parse(fs.readFileSync(filePath, "utf8"));
 
-        if (Array.isArray(filesData)) { // Se filtran los campos
+        const filesData = catalogAutosTest;
+
+        if (filesData.length > 0) { // Se filtran los campos
             const data = filesData.map(d => ({
                 codigo: d.codigo,
                 nombre: d.nombre,
@@ -44,11 +47,13 @@ export const consultCatalogTool = tool(
 export const consultCodeCatalogTool = tool(
     async (input, config) => {
         console.log('<------------ consultCodeCatalogTool ------------>');
-        const filePath = path.join(__dirname, "..", "test", "catalogo-autos.json");
-        const filesData = JSON.parse(fs.readFileSync(filePath, "utf8"));
+        // const filePath = path.join(__dirname, "..", "test", "catalogo-autos.json");
+        // const filesData = JSON.parse(fs.readFileSync(filePath, "utf8"));
+
+        const filesData = catalogAutosTest;
 
 
-        if (Array.isArray(filesData)) {
+        if (filesData.length > 0) {
             const data = filesData.map(d => ({
                 codigo: d.codigo,
                 nombre: d.nombre
@@ -70,9 +75,11 @@ export const searchImageCatalogTool = tool(
         const { codigo } = input;
         const { accountId, conversationId } = config.configurable;
 
-        const filePath = path.join(__dirname, "..", "test", "catalogo-autos.json");
-        const autosData = JSON.parse(fs.readFileSync(filePath, "utf8"));
-        const auto = autosData.find((a: any) =>
+        // const filePath = path.join(__dirname, "..", "test", "catalogo-autos.json");
+        // const autosData = JSON.parse(fs.readFileSync(filePath, "utf8"));
+
+        const filesData = catalogAutosTest;
+        const auto = filesData.find((a: any) =>
             codigo.toLocaleLowerCase().includes(a.codigo.toLocaleLowerCase())
         );
 
