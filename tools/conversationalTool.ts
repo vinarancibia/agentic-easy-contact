@@ -27,13 +27,14 @@ export const contextMessageTool = tool(
                 }
             })
             const { payload }: { payload: Array<Record<string, any>> } = response.data;
-            let userMessages: string = '';
+            let contextMessages: string = '';
             for (let i = 0; i < payload.length; i++) {
-                if (payload[i]?.sender?.type === 'contact') userMessages += 'usuario: ' + payload[i].content + '\n';
-                else if (payload[i]?.sender?.type === 'user') userMessages += 'tu: ' + payload[i].content + '\n';
+                if (payload[i]?.sender?.type === 'contact') contextMessages += 'usuario: ' + payload[i].content + '\n';
+                else if (payload[i]?.sender?.type === 'user') contextMessages += 'tu: ' + payload[i].content + '\n';
             }
             // console.log('CONTEXT: ', userMessages);
-            return userMessages;
+            // console.log(contextMessages)
+            return contextMessages;
 
         } catch (error) {
             console.error('❌ Error al obtener contexto:');
@@ -43,7 +44,7 @@ export const contextMessageTool = tool(
     },
     {
         name: 'context-message',
-        description: "Usa esta herramienta solamente al inicio de la conversación, puedes identificarla si el usuario saluda con un 'hola', 'buenos dias', 'buenas tardes' o algun otro tipo de saludo. Usa la herramienta solamente para identificar nombre del usuario y saludarle de una forma personalizada, por ejemplo: 'Hola Juan 😊, que gusto volver a hablar contigo. En que puedo ayudarte el día de hoy'"
+        description: "Usa esta herramienta para obtener el contexto de la conversacion mediante un historial de conversacion con el usuario. Si no se encuentra nada relevante, solamente da un saludo cordial.",
     }
 )
 
