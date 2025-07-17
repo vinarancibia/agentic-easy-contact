@@ -3,6 +3,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { OpenAI } from 'openai';
 import crypto from 'crypto';
+import { fileURLToPath } from 'url';
 
 type AudioToTextProp = {
   audioUrl: string
@@ -10,6 +11,9 @@ type AudioToTextProp = {
 
 export async function audioToText({ audioUrl }: AudioToTextProp): Promise<string> {
   const audioId = crypto.randomUUID();
+
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
   const tmpDir = path.resolve(__dirname, '..', 'tmp');
   if (!fs.existsSync(tmpDir)) {
     fs.mkdirSync(tmpDir, { recursive: true });

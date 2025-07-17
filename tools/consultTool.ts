@@ -74,10 +74,13 @@ export const consultImageCatalogTool = tool(
 
         if (auto) {
             const result = await sendFile({ accountId, conversationId, fileUrl: auto.imagen });
-            return result? `Imagen enviada exitosamente`:`No se pudo compartir la imagen`; 
+            return (result? 
+                `Encontré la foto del ${auto.nombre}. Si necesitas más información házmelo saber.`
+                :
+                `Lo siento, pero tuve problemas al compartir la imagen del ${auto.nombre}.`) 
         }
         else{
-            return 'No se encontro la imagen del auto.';
+            return 'Lo siento, pero no pude encontrar la imagen del auto que solicitas.';
         }
     },
     {
@@ -85,6 +88,7 @@ export const consultImageCatalogTool = tool(
         description: 'Usa esta herramienta para buscar y enviar automaticamente la imagen de un auto usando el codigo que tiene en el catalogo.',
         schema: z.object({
             codigo: z.string().describe('Codigo del auto que esta en el catalogo')
-        })
+        }),
+        returnDirect: true
     }
 );
