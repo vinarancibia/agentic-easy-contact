@@ -1,4 +1,5 @@
 {
+  "type": "module",
   "name": "02-agentic-easy-contact",
   "version": "1.0.0",
   "main": "index.js",
@@ -23,6 +24,8 @@
     "@langchain/core": "^0.3.62",
     "@langchain/langgraph": "^0.3.7",
     "@langchain/openai": "^0.5.18",
+    "@langchain/qdrant": "^0.1.2",
+    "@qdrant/js-client-rest": "^1.14.1",
     "axios": "^1.10.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.0",

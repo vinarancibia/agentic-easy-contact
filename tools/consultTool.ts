@@ -1,9 +1,8 @@
 import { z } from 'zod';
 import { tool } from '@langchain/core/tools';
-import fs from 'fs';
-import path from 'path';
-import { sendFile } from '../helpers/message';
-import { catalogAutosTest } from '../test/catalogo';
+import { sendFile } from '../helpers/message.js';
+import { catalogAutosTest } from '../test/catalogo.js';
+import { RunnableConfig } from '@langchain/core/runnables';
 
 export const consultCatalogTool = tool(
     async (input, config) => {
@@ -41,7 +40,7 @@ export const consultCatalogTool = tool(
 )
 
 export const consultCodeCatalogTool = tool(
-    async (input, config) => {
+    async (input: Record<string, any>, config: RunnableConfig) => {
         console.log('<------------ consultCodeCatalogTool ------------>');
         const filesData = catalogAutosTest;
         if (filesData.length > 0) {
@@ -63,11 +62,12 @@ export const consultCodeCatalogTool = tool(
 )
 
 export const consultImageCatalogTool = tool(
-    async (input, config) => {
+    async (input: Record<string, any>, config: RunnableConfig) => {
         console.log('<------------- searchImageCatalogTool ----------->');
         const { codigo } = input;
         console.log('CODIGO:',codigo)
-        const { accountId, conversationId } = config.configurable;
+        const accountId = config.configurable?.accountId;
+        const conversationId = config.configurable?.conversationId;
 
         const filesData = catalogAutosTest;
         const auto = filesData.find((a: any) => codigo.toLocaleLowerCase() === a.codigo.toLocaleLowerCase());

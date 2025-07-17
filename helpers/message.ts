@@ -1,5 +1,5 @@
 import axios from "axios";
-import { audioToText } from "./converter";
+import { audioToText } from "./converter.js";
 import FormData from "form-data";
 import fs from 'fs';
 import path from 'path';

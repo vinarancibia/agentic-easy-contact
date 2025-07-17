@@ -1,10 +1,10 @@
 import { Router } from "express";
-import { chatMaria } from "../controllers/agent.controller";
+import { chatAgent } from "../controllers/agent.controller.js";
 import multer from "multer";
 
 const routerAgent = Router();
 const upload = multer({ dest: 'tmp/' });
 
-routerAgent.post('/maria', upload.any(), chatMaria);
+routerAgent.post('/maria', upload.any(), chatAgent);
 
 export default routerAgent;

@@ -1,13 +1,15 @@
 import express, {Application} from 'express';
-import routerAgent from '../routes/agent.route';
+import routerAgent from '../routes/agent.route.js';
 import cors from 'cors';
+import routerRag from '../routes/rag.route.js';
 
 
 class Server {
     private app: Application;
     private port: number;
     private apiPaths = {
-        agent: '/api/agent'
+        agent: '/api/agent',
+        rag: '/api/rag'
     }
 
     constructor(){
@@ -24,7 +26,8 @@ class Server {
     }
 
     routes(){
-        this.app.use(this.apiPaths.agent, routerAgent)
+        this.app.use(this.apiPaths.agent, routerAgent);
+        this.app.use(this.apiPaths.rag, routerRag)
     }
 
     listen(){
