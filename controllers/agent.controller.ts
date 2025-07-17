@@ -8,11 +8,11 @@ import { getPrompt } from "../helpers/configAgent.js";
 const contentStore: ContentStore = {};
 
 export const chatAgent = async (req: Request, res: Response) => {
-    const {accountId, conversationId, messageType, content, active_agent_bot}:any = await requestFilter(req.body);
+    const {accountId, conversationId, messageType, content, activeAgentBot} = await requestFilter(req.body);
     // await monitorWebHook(req.body);
     const key = `${accountId}:${conversationId}`;
 
-    if (messageType === 'incoming' && active_agent_bot) {
+    if (messageType === 'incoming' && activeAgentBot) {
         if (contentStore[key]) contentStore[key].content += ` ${content}`;
         else contentStore[key] = { content };
         if (contentStore[key].timer) clearTimeout(contentStore[key].timer);
@@ -27,7 +27,7 @@ export const chatAgent = async (req: Request, res: Response) => {
                 } }
             );
             const message = result.messages[result.messages.length - 1].content as string;
-            await sendMessage({accountId, conversationId, message});
+            // await sendMessage({accountId, conversationId, message});
             console.log(`💬(${key}):`, contentStore[key].content);
             console.log("🤖:", message);
             contentStore[key].content = '';

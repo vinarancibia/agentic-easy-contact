@@ -23,7 +23,8 @@ type RequestFilterReturn = {
     accountId: number;
     conversationId: number;
     content: string;
-    messageType: 'incoming' | 'outgoing'
+    messageType: 'incoming' | 'outgoing';
+    activeAgentBot: boolean;
 }
 
 const apiAccessToken = process.env.API_ACCESS_TOKEN;
@@ -103,22 +104,22 @@ export async function sendFile({ accountId, conversationId, fileUrl }: SendFileP
 }
 
 export async function requestFilter(body: { [key: string]: any }): Promise<RequestFilterReturn> {
-    const { account, conversation, message_type, content, attachments } = body;
+    const { account, conversation, message_type, content, attachments, active_agent_bot } = body;
 
-    if (account && conversation && message_type && (message_type === 'incoming') && (content || attachments)) {
+    if (account && conversation && message_type && (message_type === 'incoming') && (content || attachments) && active_agent_bot) {
         const accountId = parseInt(account.id);
         const conversationId = parseInt(conversation.id);
         const messageType = 'incoming';
 
-        if (content) return { accountId, conversationId, messageType, content };
+        if (content) return { accountId, conversationId, messageType, content, activeAgentBot: true };
 
         if (Array.isArray(attachments) && attachments.length !== 0) {
             if (attachments[0].file_type === "audio") {
                 const transcription = await audioToText({ audioUrl: attachments[0].data_url });
-                return { accountId, conversationId, messageType, content: transcription };
+                return { accountId, conversationId, messageType, content: transcription, activeAgentBot: true };
             }
         }
-        return { accountId: 0, conversationId: 0, content: '', messageType: 'outgoing' }
+        return { accountId: 0, conversationId: 0, content: '', messageType: 'outgoing', activeAgentBot: false }
     }
-    return { accountId: 0, conversationId: 0, content: '', messageType: 'outgoing' }
+    return { accountId: 0, conversationId: 0, content: '', messageType: 'outgoing', activeAgentBot: false }
 }
