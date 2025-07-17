@@ -73,16 +73,16 @@ export const consultImageCatalogTool = tool(
         const auto = filesData.find((a: any) => codigo.toLocaleLowerCase() === a.codigo.toLocaleLowerCase());
 
         if (auto) {
-            await sendFile({ accountId, conversationId, fileUrl: auto.imagen });
-            return `Encontré el auto que buscas: ${auto.nombre} ${auto.marca}, modelo ${auto.modelo}.`
+            const result = await sendFile({ accountId, conversationId, fileUrl: auto.imagen });
+            return result? `Imagen enviada exitosamente`:`No se pudo compartir la imagen`; 
         }
         else{
-            return 'Lo siento, no encontre la imagen del auto.';
+            return 'No se encontro la imagen del auto.';
         }
     },
     {
         name: 'consult-image',
-        description: 'Usa esta herramienta para buscar la imagen de un auto usando el codigo que tiene en el catalogo. Si encuentras el auto, dile que lograste encontrar el auto y mencionale su nombre, marca y modelo, no menciones agregues ningun link o dato adicional.',
+        description: 'Usa esta herramienta para buscar y enviar automaticamente la imagen de un auto usando el codigo que tiene en el catalogo.',
         schema: z.object({
             codigo: z.string().describe('Codigo del auto que esta en el catalogo')
         })

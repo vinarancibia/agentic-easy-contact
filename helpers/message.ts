@@ -4,6 +4,7 @@ import FormData from "form-data";
 import fs from 'fs';
 import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
+import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -49,58 +50,67 @@ export async function sendMessage({ accountId, conversationId, message }: SendMe
     }
 }
 
-export async function sendFile({ accountId, conversationId, fileUrl }: SendFileProp) {
-    console.log('<------------- sendFile ----------->');
-    console.log('FILEURL: ', fileUrl);
-    const tmpDir = path.join(__dirname, '../tmp'); // Carpeta para archivos temporales.
-    if (!fs.existsSync(tmpDir)) {
-        fs.mkdirSync(tmpDir, { recursive: true });
-    }
-    const url = `https://easycontact.top/api/v1/accounts/${accountId}/conversations/${conversationId}/messages`;
-    const form = new FormData();
+export async function sendFile({ accountId, conversationId, fileUrl }: SendFileProp): Promise<boolean> {
+    return new Promise(async (resolve, reject) => {
+        console.log('<------------- sendFile ----------->');
+        console.log('FILEURL: ', fileUrl);
+        const url = `https://easycontact.top/api/v1/accounts/${accountId}/conversations/${conversationId}/messages`;
+        const form = new FormData();
 
-    form.append('message_type', 'outgoing');
-    form.append('content_type', 'text');
-    form.append('content', '');
+        form.append('message_type', 'outgoing');
+        form.append('content_type', 'text');
+        form.append('content', '');
 
-    const fileExtension = path.extname(fileUrl).split('?')[0];
-    const fileName = `file-${uuidv4()}${fileExtension}`;
-    const filePath = path.join(tmpDir, fileName);
+        const __filename = fileURLToPath(import.meta.url);
+        const __dirname = path.dirname(__filename);
 
-
-    if (url) {
-        try {
-            console.log('🌐 Descargando archivo')
-            const response = await axios.get(fileUrl, { responseType: 'stream' });
-            const writer = fs.createWriteStream(filePath);
-
-            console.log('📂 Guardando archivo en tmp')
-            await new Promise<void>((resolve, reject) => {
-                response.data.pipe(writer);
-                writer.on('finish', resolve);
-                writer.on('error', reject);
-            });
-            form.append('attachments[]', fs.createReadStream(filePath), fileName);
-
-            console.log('📨 Enviando el archivo al chat')
-            await axios.post(
-                url,
-                form, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                    'api_access_token': apiAccessToken
-                }
-            })
-            console.log('✅ Se envio la imagen con exito ');
-            console.log('🗑️ Eliminando archivo de tmp')
-            await fs.promises.unlink(filePath);
-        } catch (error) {
-            console.log('❌ Error al enviar el archivo ');
-            console.log(error)
+        const tmpDir = path.join(__dirname, '../tmp'); // Carpeta para archivos temporales.
+        if (!fs.existsSync(tmpDir)) {
+            fs.mkdirSync(tmpDir, { recursive: true });
         }
-    } else {
-        console.log('❌ No se pudo enviar el archivo por falta del URL de envio')
-    }
+
+        if (url) {
+            try {
+                console.log('📎 Buscando o creando tmp')
+                const fileExtension = path.extname(fileUrl).split('?')[0];
+                const fileName = `file-${uuidv4()}${fileExtension}`;
+                const filePath = path.join(tmpDir, fileName);
+
+                console.log('🌐 Descargando archivo')
+                const response = await axios.get(fileUrl, { responseType: 'stream' });
+                const writer = fs.createWriteStream(filePath);
+
+                console.log('📂 Guardando archivo en tmp')
+                await new Promise<void>((res, rej) => {
+                    response.data.pipe(writer);
+                    writer.on('finish', res);
+                    writer.on('error', rej);
+                });
+                form.append('attachments[]', fs.createReadStream(filePath), fileName);
+
+                console.log('📨 Enviando el archivo al chat')
+                await axios.post(
+                    url,
+                    form, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        'api_access_token': apiAccessToken
+                    }
+                })
+                console.log('✅ Se envio la imagen con exito');
+                console.log('🗑️ Eliminando archivo de tmp')
+                await fs.promises.unlink(filePath);
+                resolve(true);
+            } catch (error) {
+                console.log('❌ Error al enviar el archivo ');
+                console.log(error)
+                reject(false);
+            }
+        } else {
+            console.log('❌ No se pudo enviar el archivo por falta del URL de envio')
+            reject(false);
+        }
+    });
 }
 
 export async function requestFilter(body: { [key: string]: any }): Promise<RequestFilterReturn> {
@@ -111,7 +121,7 @@ export async function requestFilter(body: { [key: string]: any }): Promise<Reque
         const conversationId = parseInt(conversation.id);
         const messageType = 'incoming';
 
-        if (content) return { accountId, conversationId, messageType, content, activeAgentBot: true };
+        if (content) return { accountId, conversationId, messageType, content: content.trim(), activeAgentBot: true };
 
         if (Array.isArray(attachments) && attachments.length !== 0) {
             if (attachments[0].file_type === "audio") {

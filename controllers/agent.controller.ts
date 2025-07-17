@@ -12,7 +12,7 @@ export const chatAgent = async (req: Request, res: Response) => {
     // await monitorWebHook(req.body);
     const key = `${accountId}:${conversationId}`;
 
-    if (messageType === 'incoming' && activeAgentBot) {
+    if (messageType === 'incoming' && activeAgentBot && (content.trim() !== '')) {
         if (contentStore[key]) contentStore[key].content += ` ${content}`;
         else contentStore[key] = { content };
         if (contentStore[key].timer) clearTimeout(contentStore[key].timer);
