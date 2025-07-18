@@ -116,6 +116,7 @@ export async function sendFile({ accountId, conversationId, fileUrl }: SendFileP
 export async function requestFilter(body: { [key: string]: any }): Promise<RequestFilterReturn> {
     const { account, conversation, message_type, content, attachments, active_agent_bot } = body;
 
+
     if (account && conversation && message_type && (message_type === 'incoming') && (content || attachments) && active_agent_bot) {
         const accountId = parseInt(account.id);
         const conversationId = parseInt(conversation.id);

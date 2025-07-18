@@ -9,7 +9,7 @@ const contentStore: ContentStore = {};
 
 export const chatAgent = async (req: Request, res: Response) => {
     const {accountId, conversationId, messageType, content, activeAgentBot} = await requestFilter(req.body);
-    // await monitorWebHook(req.body);
+    await monitorWebHook(req.body);
     const key = `${accountId}:${conversationId}`;
 
     if (messageType === 'incoming' && activeAgentBot && (content.trim() !== '')) {
