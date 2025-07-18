@@ -1,14 +1,17 @@
-import { promptStore } from "../test/prompts.js";
+import axios from "axios";
 
-export async function getPrompt(userId: string): Promise<string> {
-    return new Promise((resolve) => {
-        console.log('<-------- 🧠 Obteniendo prompt ---------->')
+import dotenv from 'dotenv';
+dotenv.config();
 
-        let promp = promptStore.agenteVentasEasyContact;
+export async function getPrompt({accountId, inboxId}:{accountId:number, inboxId:number}): Promise<string> {
+    return new Promise(async (resolve) => {
+        console.log('<-------- 🧠 Obteniendo prompt ---------->');
+        const url = `https://easycontact.top/platform/api/v1/agent_bots/query?account_id=${accountId}&inbox_id=${inboxId}`;
+        const apiAccessTokenPrompt = process.env.API_ACCESS_TOKEN_PROMPT;
 
-        // if (userId === '1:13108') promp = 'Tu nombre es Roberto, eres un asistente que responde de forma cordial. Siempre saluda usando tu nombre';
-        // else if (userId === '2:13108') promp = 'Tu nombre es Harold, eres un asistente que responde de forma cordial. Siempre saluda usando tu nombre';
+        const response = await axios.get(url, {headers: {'api_access_token':apiAccessTokenPrompt}});
+        const {prompt} = response.data;
 
-        resolve(promp);
+        resolve(prompt? prompt.trim(): '');
     });
 }

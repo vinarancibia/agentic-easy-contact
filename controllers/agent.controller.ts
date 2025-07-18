@@ -8,7 +8,7 @@ import { getPrompt } from "../helpers/configAgent.js";
 const contentStore: ContentStore = {};
 
 export const chatAgent = async (req: Request, res: Response) => {
-    const {accountId, conversationId, messageType, content, activeAgentBot} = await requestFilter(req.body);
+    const {accountId, inboxId, conversationId, messageType, content, activeAgentBot} = await requestFilter(req.body);
     await monitorWebHook(req.body);
     const key = `${accountId}:${conversationId}`;
 
@@ -23,7 +23,7 @@ export const chatAgent = async (req: Request, res: Response) => {
                     thread_id: conversationId,
                     accountId,
                     conversationId,
-                    dynamicPrompt: await getPrompt(key)
+                    dynamicPrompt: await getPrompt({accountId, inboxId})
                 } }
             );
             const message = result.messages[result.messages.length - 1].content as string;
