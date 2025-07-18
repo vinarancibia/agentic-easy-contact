@@ -9,7 +9,7 @@ const contentStore: ContentStore = {};
 
 export const chatAgent = async (req: Request, res: Response) => {
     const {accountId, inboxId, conversationId, messageType, content, activeAgentBot} = await requestFilter(req.body);
-    await monitorWebHook(req.body);
+    // await monitorWebHook(req.body);
     const key = `${accountId}:${conversationId}`;
 
     if (messageType === 'incoming' && activeAgentBot && (content.trim() !== '')) {
@@ -20,18 +20,19 @@ export const chatAgent = async (req: Request, res: Response) => {
             const result = await agentMaria.invoke(
                 { messages: [{ role: "user", content: contentStore[key].content }] },
                 { configurable: { 
-                    thread_id: conversationId,
+                    thread_id: key,
                     accountId,
                     conversationId,
+                    inboxId,
                     dynamicPrompt: await getPrompt({accountId, inboxId})
                 } }
             );
             const message = result.messages[result.messages.length - 1].content as string;
-            await sendMessage({accountId, conversationId, message});
+            await sendMessage({accountId, conversationId, inboxId, message});
             console.log(`💬(${key}):`, contentStore[key].content);
             console.log("🤖:", message);
             contentStore[key].content = '';
-        }, 5000);
+        }, 3000);
         res.json({ message_type: 'incoming' });
     }else res.json({ message_type: 'outgoing' });
 }

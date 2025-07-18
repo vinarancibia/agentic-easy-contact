@@ -6,17 +6,20 @@ import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
+import { getAccessToken } from "./configAgent.js";
 dotenv.config();
 
 type SendMessageProp = {
     accountId: number;
-    conversationId: number
+    conversationId: number;
+    inboxId: number;
     message: string;
 }
 
 type SendFileProp = {
     accountId: number;
     conversationId: number;
+    inboxId: number;
     fileUrl: string;
 }
 
@@ -32,8 +35,9 @@ type RequestFilterReturn = {
 
 const apiAccessToken = process.env.API_ACCESS_TOKEN;
 
-export async function sendMessage({ accountId, conversationId, message }: SendMessageProp) {
+export async function sendMessage({ accountId, conversationId, message, inboxId }: SendMessageProp) {
     const url = `https://easycontact.top/api/v1/accounts/${accountId}/conversations/${conversationId}/messages`;
+    const accessToken = await getAccessToken({accountId, inboxId});
     const form = new FormData();
 
     form.append('message_type', 'outgoing');
@@ -46,17 +50,18 @@ export async function sendMessage({ accountId, conversationId, message }: SendMe
             form, {
             headers: {
                 'Content-Type': 'multipart/form-data',
-                'api_access_token': 'L5G12gAfw5ZAGPMyT6KrJhvN'
+                'api_access_token': accessToken
             }
         })
     }
 }
 
-export async function sendFile({ accountId, conversationId, fileUrl }: SendFileProp): Promise<boolean> {
+export async function sendFile({ accountId, conversationId, fileUrl, inboxId }: SendFileProp): Promise<boolean> {
     return new Promise(async (resolve, reject) => {
         console.log('<------------- sendFile ----------->');
         console.log('FILEURL: ', fileUrl);
         const url = `https://easycontact.top/api/v1/accounts/${accountId}/conversations/${conversationId}/messages`;
+        const accessToken = await getAccessToken({accountId, inboxId});
         const form = new FormData();
 
         form.append('message_type', 'outgoing');

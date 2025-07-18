@@ -68,12 +68,13 @@ export const consultImageCatalogTool = tool(
         console.log('CODIGO:',codigo)
         const accountId = config.configurable?.accountId;
         const conversationId = config.configurable?.conversationId;
+        const inboxId = config.configurable?.inboxId;
 
         const filesData = catalogAutosTest;
         const auto = filesData.find((a: any) => codigo.toLocaleLowerCase() === a.codigo.toLocaleLowerCase());
 
         if (auto) {
-            const result = await sendFile({ accountId, conversationId, fileUrl: auto.imagen });
+            const result = await sendFile({ accountId, conversationId, inboxId, fileUrl: auto.imagen });
             return (result? 
                 `Encontré la foto del ${auto.nombre}. Si necesitas más información házmelo saber.`
                 :
