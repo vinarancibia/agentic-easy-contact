@@ -6,21 +6,20 @@ import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
-import { getAccessToken } from "./configAgent.js";
 dotenv.config();
 
 type SendMessageProp = {
     accountId: number;
     conversationId: number;
-    inboxId: number;
     message: string;
+    accessToken: string;
 }
 
 type SendFileProp = {
     accountId: number;
     conversationId: number;
-    inboxId: number;
     fileUrl: string;
+    accessToken: string;
 }
 
 type RequestFilterReturn = {
@@ -33,11 +32,9 @@ type RequestFilterReturn = {
 
 }
 
-const apiAccessToken = process.env.API_ACCESS_TOKEN;
-
-export async function sendMessage({ accountId, conversationId, message, inboxId }: SendMessageProp) {
+export async function sendMessage({ accountId, conversationId, message, accessToken }: SendMessageProp) {
     const url = `https://easycontact.top/api/v1/accounts/${accountId}/conversations/${conversationId}/messages`;
-    const accessToken = await getAccessToken({accountId, inboxId});
+    // const accessToken = await getAccessToken({accountId, inboxId});
     const form = new FormData();
 
     form.append('message_type', 'outgoing');
@@ -56,12 +53,12 @@ export async function sendMessage({ accountId, conversationId, message, inboxId 
     }
 }
 
-export async function sendFile({ accountId, conversationId, fileUrl, inboxId }: SendFileProp): Promise<boolean> {
+export async function sendFile({ accountId, conversationId, fileUrl, accessToken }: SendFileProp): Promise<boolean> {
     return new Promise(async (resolve, reject) => {
         console.log('<------------- sendFile ----------->');
         console.log('FILEURL: ', fileUrl);
         const url = `https://easycontact.top/api/v1/accounts/${accountId}/conversations/${conversationId}/messages`;
-        const accessToken = await getAccessToken({accountId, inboxId});
+        // const accessToken = await getAccessToken({accountId, inboxId});
         const form = new FormData();
 
         form.append('message_type', 'outgoing');
@@ -101,7 +98,7 @@ export async function sendFile({ accountId, conversationId, fileUrl, inboxId }: 
                     form, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
-                        'api_access_token': apiAccessToken
+                        'api_access_token': accessToken
                     }
                 })
                 console.log('✅ Se envio la imagen con exito');
@@ -122,7 +119,6 @@ export async function sendFile({ accountId, conversationId, fileUrl, inboxId }: 
 
 export async function requestFilter(body: { [key: string]: any }): Promise<RequestFilterReturn> {
     const { account, conversation, message_type, content, attachments, active_agent_bot, inbox } = body;
-
 
     if (account && conversation && message_type && (message_type === 'incoming') && (content || attachments) && active_agent_bot) {
         const accountId = parseInt(account.id);

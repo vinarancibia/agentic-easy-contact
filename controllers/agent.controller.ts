@@ -3,12 +3,14 @@ import agentMaria from "../agents/maria.js";
 import { requestFilter, sendMessage } from "../helpers/message.js";
 import { ContentStore } from "../interfaces/message.js";
 import { monitorWebHook } from "../helpers/webhook.js";
-import { getPrompt } from "../helpers/configAgent.js";
+import { getPromptAndToken } from "../helpers/configAgent.js";
 
 const contentStore: ContentStore = {};
 
 export const chatAgent = async (req: Request, res: Response) => {
     const {accountId, inboxId, conversationId, messageType, content, activeAgentBot} = await requestFilter(req.body);
+    const {prompt, accessToken} = await getPromptAndToken({accountId, inboxId});
+    
     // await monitorWebHook(req.body);
     const key = `${accountId}:${conversationId}`;
 
@@ -23,12 +25,12 @@ export const chatAgent = async (req: Request, res: Response) => {
                     thread_id: key,
                     accountId,
                     conversationId,
-                    inboxId,
-                    dynamicPrompt: await getPrompt({accountId, inboxId})
+                    accessToken,
+                    dynamicPrompt: prompt
                 } }
             );
             const message = result.messages[result.messages.length - 1].content as string;
-            await sendMessage({accountId, conversationId, inboxId, message});
+            await sendMessage({accountId, conversationId, message, accessToken});
             console.log(`💬(${key}):`, contentStore[key].content);
             console.log("🤖:", message);
             contentStore[key].content = '';
