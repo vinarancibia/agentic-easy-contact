@@ -8,14 +8,12 @@ import { getPromptAndToken } from "../helpers/configAgent.js";
 const contentStore: ContentStore = {};
 
 export const chatAgent = async (req: Request, res: Response) => {
-    const {accountId, inboxId, conversationId, messageType, content, activeAgentBot} = await requestFilter(req.body);
-    const {prompt, accessToken} = await getPromptAndToken({accountId, inboxId});
-    // console.log('PROMPT', prompt, 'ACCESSTOKEN',accessToken);
-    
+    const {accountId, inboxId, conversationId, messageType, content, activeAgentBot} = await requestFilter(req.body);    
     // await monitorWebHook(req.body);
     const key = `${accountId}:${conversationId}`;
-
-    if (messageType === 'incoming' && activeAgentBot && (content.trim() !== '') && prompt && accessToken && (prompt !== '') && (accessToken !== '')) {
+    
+    if (messageType === 'incoming' && activeAgentBot && (content.trim() !== '')) {
+        const {prompt, accessToken} = await getPromptAndToken({accountId, inboxId});
         if (contentStore[key]) contentStore[key].content += ` ${content}`;
         else contentStore[key] = { content };
         if (contentStore[key].timer) clearTimeout(contentStore[key].timer);
