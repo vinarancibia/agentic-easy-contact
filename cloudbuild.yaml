@@ -1,29 +1,29 @@
-# steps:
-#   # Instala las dependencias
-#   - name: 'gcr.io/cloud-builders/npm'
-#     args: ['install', '--legacy-peer-deps']
-
-#   # Ejecuta npm start (que ejecuta build y luego arranca app.js)
-#   - name: 'gcr.io/cloud-builders/npm'
-#     args: ['run','build']
-
-# timeout: '900s'  # Opcional, para builds largos
-
 steps:
-  # Paso 1: Instala dependencias usando `npm install --legacy-peer-deps`
-  - name: 'node:20'
-    entrypoint: bash
-    args:
-      - -c
-      - |
-        npm install --legacy-peer-deps
+  # Instala las dependencias
+  - name: 'gcr.io/cloud-builders/npm'
+    args: ['install']
 
-  # Paso 2: Ejecuta tu build
-  - name: 'node:20'
-    entrypoint: bash
-    args:
-      - -c
-      - |
-        npm run build || echo "No build script found"
+  # Ejecuta npm start (que ejecuta build y luego arranca app.js)
+  - name: 'gcr.io/cloud-builders/npm'
+    args: ['run','build']
 
-timeout: '900s'
+timeout: '900s'  # Opcional, para builds largos
+
+# steps:
+#   # Paso 1: Instala dependencias usando `npm install --legacy-peer-deps`
+#   - name: 'node:20'
+#     entrypoint: bash
+#     args:
+#       - -c
+#       - |
+#         npm install --legacy-peer-deps
+
+#   # Paso 2: Ejecuta tu build
+#   - name: 'node:20'
+#     entrypoint: bash
+#     args:
+#       - -c
+#       - |
+#         npm run build || echo "No build script found"
+
+# timeout: '900s'

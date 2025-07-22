@@ -29,7 +29,7 @@ export const chatAgent = async (req: Request, res: Response) => {
                 } }
             );
             const message = result.messages[result.messages.length - 1].content as string;
-            await sendMessage({accountId, conversationId, message, accessToken});
+            // await sendMessage({accountId, conversationId, message, accessToken});
             console.log(`💬(${key}):`, contentStore[key].content);
             console.log("🤖:", message);
             contentStore[key].content = '';
