@@ -1,7 +1,7 @@
 steps:
   # Instala las dependencias
   - name: 'gcr.io/cloud-builders/npm'
-    args: ['install']
+    args: ['install', '--legacy-peer-deps']
 
   # Ejecuta npm start (que ejecuta build y luego arranca app.js)
   - name: 'gcr.io/cloud-builders/npm'
