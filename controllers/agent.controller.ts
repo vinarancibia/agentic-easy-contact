@@ -37,3 +37,6 @@ export const chatAgent = async (req: Request, res: Response) => {
         res.json({ message_type: 'incoming' });
     }else res.json({ message_type: 'outgoing' });
 }
+
+
+
