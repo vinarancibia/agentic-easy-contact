@@ -1,7 +1,7 @@
 import express, {Application} from 'express';
 import routerAgent from '../routes/agent.route.js';
 import cors from 'cors';
-// import routerRag from '../routes/rag.route.js';
+import routerRag from '../routes/rag.route.js';
 
 
 class Server {
@@ -27,7 +27,7 @@ class Server {
 
     routes(){
         this.app.use(this.apiPaths.agent, routerAgent);
-        // this.app.use(this.apiPaths.rag, routerRag)
+        this.app.use(this.apiPaths.rag, routerRag);
     }
 
     listen(){
