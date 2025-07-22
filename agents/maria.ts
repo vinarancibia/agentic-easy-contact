@@ -7,7 +7,7 @@ import z from "zod";
 import { RunnableConfig } from "@langchain/core/runnables";
 import { BaseMessageLike } from "@langchain/core/messages";
 import { configPrompTool } from "../tools/configTool.js";
-import { searchInfoOnCollection } from "../tools/ragTool.js";
+import { getCollectionsVectorStore, searchInfoOnCollection } from "../tools/ragTool.js";
 
 
 
@@ -41,7 +41,8 @@ const agentMaria = createReactAgent({
             consultCatalogTool,
             consultImageCatalogTool,
             consultCodeCatalogTool,
-            searchInfoOnCollection
+            searchInfoOnCollection,
+            getCollectionsVectorStore
         ],
     prompt,
     checkpointSaver: new MemorySaver(),

@@ -2,6 +2,7 @@ import { tool } from "@langchain/core/tools";
 import { QdrantVectorStore } from '@langchain/qdrant';
 import { OpenAIEmbeddings } from "@langchain/openai";
 import { z } from 'zod'
+import { vectorStoreQdrant } from "../vector-store/qdrantConfig.js";
 
 interface Result {
     content: string;
@@ -27,4 +28,13 @@ export const searchInfoOnCollection = tool(async (input) => {
         query: z.string().describe('Pregunta del usuario'),
         collectionName: z.string().describe('Nombre de la coleccion donde se encuentra la informacion')
     })
-})
+});
+
+export const getCollectionsVectorStore = tool(async(input) => {
+    console.log('<------------- getCollectionsVectorStore ----------->');
+    const result = await vectorStoreQdrant.getCollections();
+    return JSON.stringify({ colecciones: result.collections });
+}, {
+    name:'get-collections-vector-store',
+    description:'Usa esta herramienta para acceder a la lista disponible de colecciones en la base de datos vectorial'
+});
