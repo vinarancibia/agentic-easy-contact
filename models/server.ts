@@ -1,7 +1,8 @@
 import express, {Application} from 'express';
 import routerAgent from '../routes/agent.route.js';
-import cors from 'cors';
 import routerRag from '../routes/rag.route.js';
+import routerAuth from '../routes/auth.route.js';
+import cors from 'cors';
 
 
 class Server {
@@ -9,7 +10,8 @@ class Server {
     private port: number;
     private apiPaths = {
         agent: '/api/agent',
-        rag: '/api/rag'
+        rag: '/api/rag',
+        auth: '/api/auth'
     }
 
     constructor(){
@@ -28,6 +30,7 @@ class Server {
     routes(){
         this.app.use(this.apiPaths.agent, routerAgent);
         this.app.use(this.apiPaths.rag, routerRag);
+        this.app.use(this.apiPaths.auth, routerAuth);
     }
 
     listen(){

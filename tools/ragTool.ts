@@ -23,7 +23,7 @@ export const searchInfoOnCollection = tool(async (input) => {
     return JSON.stringify(results);
 }, {
     name: 'search-info-collection',
-    description: 'Usa esta herramienta para consultar preguntas de un usuario que se tengan que buscar en colecciones especificas de la base de datos vectorial. Al final de cada respuesta indica el numero de pagina(s) de donde tomaste la respuesta.',
+    description: 'cuando no enncuetres respuesta Usa esta herramienta para consultar preguntas de un usuario que se tengan que buscar en colecciones especificas de la base de datos vectorial. Al final de cada respuesta indica el numero de pagina(s) de donde tomaste la respuesta.',
     schema: z.object({
         query: z.string().describe('Pregunta del usuario'),
         collectionName: z.string().describe('Nombre de la coleccion donde se encuentra la informacion')
@@ -41,5 +41,5 @@ export const getCollectionsVectorStore = tool(async(input) => {
     }
 }, {
     name:'get-collections-vector-store',
-    description:'Usa esta herramienta para acceder a la lista disponible de colecciones en la base de datos vectorial'
+    description:'documentos Usa esta herramienta para acceder a la lista disponible de colecciones en la base de datos vectorial.'
 });
