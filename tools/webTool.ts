@@ -10,6 +10,6 @@ export const webInformationTool = tool(
     },
     {
         name: 'web-information',
-        description: `Usa esta herramienta cuando el usuario te pregunta “¿Que ves aquí?, ¿Dime que ves?, ¿Qué estas mirando?”  o alguna frase similar. Esta herramienta te dará información sobre el sitio web en que el usuario se encuentra actualmente.`
+        description: `Esta herramienta provee información en tiempo real sobre el contenido que el usuario está viendo en pantalla. El agente debe usarla cuando el usuario haga preguntas directas relacionadas con métricas, cifras, resultados o cualquier dato visible en ese contexto. El propósito es que el agente pueda responder con precisión basándose en la información mostrada, en lugar de inventar o recurrir a conocimiento general. Ejemplos de uso: '¿Cuánto ganamos hoy?', 'Dime el total de ventas', 'Qué clientes aparecen en la lista', 'Cuántos registros hay aquí'. El agente no debe usar esta herramienta si la pregunta no está relacionada con lo que el usuario está visualizando actualmente.`
     }
 )
