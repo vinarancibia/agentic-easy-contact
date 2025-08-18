@@ -8,6 +8,7 @@ import { RunnableConfig } from "@langchain/core/runnables";
 import { BaseMessageLike } from "@langchain/core/messages";
 import { configPrompTool } from "../tools/configTool.js";
 import { getCollectionsVectorStore, searchInfoOnCollection } from "../tools/ragTool.js";
+import { webInformationTool } from "../tools/webTool.js";
 
 
 
@@ -42,7 +43,8 @@ const agentMaria = createReactAgent({
             consultImageCatalogTool,
             consultCodeCatalogTool,
             searchInfoOnCollection,
-            getCollectionsVectorStore
+            getCollectionsVectorStore,
+            webInformationTool
         ],
     prompt,
     checkpointSaver: new MemorySaver(),

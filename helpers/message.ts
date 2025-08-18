@@ -29,7 +29,7 @@ type RequestFilterReturn = {
     content: string;
     messageType: 'incoming' | 'outgoing';
     activeAgentBot: boolean;
-
+    customAttributes: {pageUrl:string, todoText: string, pageTitle:string, htmlExcerpt: string};
 }
 
 export async function sendMessage({ accountId, conversationId, message, accessToken }: SendMessageProp) {
@@ -118,23 +118,38 @@ export async function sendFile({ accountId, conversationId, fileUrl, accessToken
 }
 
 export async function requestFilter(body: { [key: string]: any }): Promise<RequestFilterReturn> {
-    const { account, conversation, message_type, content, attachments, active_agent_bot, inbox } = body;
+    const { account, conversation, message_type, content, attachments, active_agent_bot, inbox, sender } = body;
+    const customAttributes: {pageUrl:string, todoText: string, pageTitle:string, htmlExcerpt: string} = 
+    {
+        pageUrl:'',
+        todoText:'',
+        pageTitle:'',
+        htmlExcerpt:'' 
+    }
 
     if (account && conversation && message_type && (message_type === 'incoming') && (content || attachments) && active_agent_bot) {
         const accountId = parseInt(account.id);
         const inboxId = parseInt(inbox.id);
         const conversationId = parseInt(conversation.id);
         const messageType = 'incoming';
-
-        if (content) return { accountId, inboxId, conversationId, messageType, content: content.trim(), activeAgentBot: true };
+        const {custom_attributes} = sender;
+        if(custom_attributes){
+            const {page_url, todo_text, page_title, html_excerpt} = custom_attributes;
+            customAttributes.pageUrl = page_url || '';
+            customAttributes.todoText = todo_text || '';
+            customAttributes.pageTitle = page_title || '';
+            customAttributes.htmlExcerpt = html_excerpt || '';
+        }
+        
+        if (content) return { accountId, inboxId, conversationId, messageType, content: content.trim(), activeAgentBot: true, customAttributes };
 
         if (Array.isArray(attachments) && attachments.length !== 0) {
             if (attachments[0].file_type === "audio") {
                 const transcription = await audioToText({ audioUrl: attachments[0].data_url });
-                return { accountId, inboxId, conversationId, messageType, content: transcription, activeAgentBot: true };
+                return { accountId, inboxId, conversationId, messageType, content: transcription, activeAgentBot: true, customAttributes };
             }
         }
-        return { accountId: 0, inboxId:0, conversationId: 0, content: '', messageType: 'outgoing', activeAgentBot: false }
+        return { accountId: 0, inboxId:0, conversationId: 0, content: '', messageType: 'outgoing', activeAgentBot: false, customAttributes }
     }
-    return { accountId: 0, inboxId:0, conversationId: 0, content: '', messageType: 'outgoing', activeAgentBot: false }
+    return { accountId: 0, inboxId:0, conversationId: 0, content: '', messageType: 'outgoing', activeAgentBot: false, customAttributes }
 }

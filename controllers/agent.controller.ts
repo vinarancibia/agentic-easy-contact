@@ -8,8 +8,8 @@ import { monitorWebHook } from "../helpers/webhook.js";
 const contentStore: ContentStore = {};
 
 export const chatAgent = async (req: Request, res: Response) => {
-    const {accountId, inboxId, conversationId, messageType, content, activeAgentBot} = await requestFilter(req.body);    
-    await monitorWebHook(req.body);
+    const {accountId, inboxId, conversationId, messageType, content, activeAgentBot, customAttributes} = await requestFilter(req.body);    
+    // await monitorWebHook(req.body);
     const key = `${accountId}:${conversationId}`;
     
     if (messageType === 'incoming' && activeAgentBot && (content.trim() !== '')) {
@@ -25,7 +25,8 @@ export const chatAgent = async (req: Request, res: Response) => {
                     accountId,
                     conversationId,
                     accessToken,
-                    dynamicPrompt: prompt
+                    dynamicPrompt: prompt,
+                    customAttributes
                 } }
             );
             const message = result.messages[result.messages.length - 1].content as string;
