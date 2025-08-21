@@ -9,7 +9,6 @@ export interface Auto {
   disponible: number;
 }
 
-
 export const catalogAutosTest: Auto[] = [
   {
     codigo: "A001",

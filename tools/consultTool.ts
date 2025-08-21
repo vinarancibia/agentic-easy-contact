@@ -19,7 +19,6 @@ export const consultCatalogTool = tool(
                 precio: d.precio,
                 disponible: d.disponible
             }))
-
             return JSON.stringify(data);
         }
         return 'Aun no tengo articulos en el catalogo';

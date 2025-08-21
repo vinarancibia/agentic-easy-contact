@@ -41,5 +41,5 @@ export const getCollectionsVectorStore = tool(async(input) => {
     }
 }, {
     name:'get-collections-vector-store',
-    description:'documentos Usa esta herramienta para acceder a la lista disponible de colecciones en la base de datos vectorial.'
+    description:'Usa esta herramienta para acceder a la lista disponible de colecciones en la base de datos vectorial. Estas colecciones las llamamos archivos.'
 });

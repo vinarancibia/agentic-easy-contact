@@ -30,7 +30,7 @@ const prompt = (
     return [{ role: "system", content: systemMsg }, ...state.messages];
 };
 
-const llm = new ChatOpenAI({ model: 'gpt-5-mini' });
+const llm = new ChatOpenAI({ model: 'gpt-4o-mini', temperature: 0 });
 
 const agentMaria = createReactAgent({
     llm,
