@@ -22,6 +22,7 @@ export const chatAgent = async (req: Request, res: Response) => {
                 { messages: [{ role: "user", content: contentStore[key].content }] },
                 { configurable: { 
                     thread_id: key,
+                    inboxId,
                     accountId,
                     conversationId,
                     accessToken,

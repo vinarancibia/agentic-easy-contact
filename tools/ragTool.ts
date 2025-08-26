@@ -8,14 +8,20 @@ interface Result {
     content: string;
     pageNumber: number;
 }
+interface Collection {
+    name: string
+}
 
-export const searchInfoOnCollection = tool(async (input) => {
+export const searchInfoOnCollection = tool(async (input, config) => {
     console.log('<------------- searchInfoOnCollection ----------->');
     const { collectionName, query } = input;
+    const accountId = config.configurable?.accountId;
+    const agentId = config.configurable?.inboxId;
+    const prefix = `${accountId}-${agentId}-`;
     const embeddings = new OpenAIEmbeddings({model: "text-embedding-3-large"});
     const vectorStore = await QdrantVectorStore.fromExistingCollection(embeddings, {
         url: process.env.QDRANT_URL,
-        collectionName
+        collectionName: `${prefix}${collectionName}`
     })
     const response = await vectorStore.similaritySearch(query);
     const results: Result[] = response.map(r => ({content: r.pageContent, pageNumber: r.metadata.loc?.pageNumber}));
@@ -23,23 +29,29 @@ export const searchInfoOnCollection = tool(async (input) => {
     return JSON.stringify(results);
 }, {
     name: 'search-info-collection',
-    description: 'cuando no enncuetres respuesta Usa esta herramienta para consultar preguntas de un usuario que se tengan que buscar en colecciones especificas de la base de datos vectorial. Al final de cada respuesta indica el numero de pagina(s) de donde tomaste la respuesta.',
+    description: `Esta herramienta busca información dentro de un archivo previamente cargado en la base de datos vectorial. Devuelve un arreglo de resultados, donde cada resultado contiene 'content' (el texto encontrado) y 'pageNumber' (el número de página en el documento). El agente debe usar esta herramienta cuando el usuario haga preguntas sobre el contenido de un archivo o documento específico. Al dar la respuesta, el agente debe basarse únicamente en los 'content' devueltos y siempre citar el número de página correspondiente a cada fragmento de información.`,
     schema: z.object({
         query: z.string().describe('Pregunta del usuario'),
         collectionName: z.string().describe('Nombre de la coleccion donde se encuentra la informacion')
     })
 });
 
-export const getCollectionsVectorStore = tool(async(input) => {
+export const getCollectionsVectorStore = tool(async(input, config) => {
     console.log('<------------- getCollectionsVectorStore ----------->');
+    const accountId = config.configurable?.accountId;
+    const agentId = config.configurable?.inboxId;
+    const prefix = `${accountId}-${agentId}-`;
     try {
-        const result = await vectorStoreQdrant.getCollections();
-        return JSON.stringify({ colecciones: result.collections });
+        const {collections}: {collections:Collection[]} = await vectorStoreQdrant.getCollections();
+        const collectionNames = collections.map(c => c.name);
+        const collectionFilter = collectionNames.filter(name => name.startsWith(prefix));
+        const listCollection = collectionFilter.map(name => name.slice(prefix.length));
+        return JSON.stringify({ files: [...listCollection] });
     } catch (err) {
         console.error(err);
         return JSON.stringify({ message: "Error al obtener las colecciones" });
     }
 }, {
     name:'get-collections-vector-store',
-    description:'Usa esta herramienta para acceder a la lista disponible de colecciones en la base de datos vectorial. Estas colecciones las llamamos archivos.'
+    description:'Esta herramienta obtiene la lista de colecciones existentes en la base de datos vectorial. Cada colección corresponde a un archivo o documento que el usuario ha cargado previamente. El agente debe usarla cuando el usuario pregunte qué archivos, documentos o PDFs tiene cargados, qué información está disponible para consultar, o quiera ver el listado de contenidos existentes. El agente no debe usarla si la consulta no está relacionada con los archivos cargados en el sistema.'
 });
