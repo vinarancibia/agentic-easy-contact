@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { addPdf, createCollection, getCollenctions, searchInVectoreStore } from "../controllers/rag.controller.js";
+import { addPdf, createCollection, deleteCollection, getCollenctions, searchInVectoreStore } from "../controllers/rag.controller.js";
 import multer from "multer";
 import fs from 'fs';
 import path from 'path';
@@ -21,6 +21,7 @@ const routerRag = Router();
 
 routerRag.get('/', upload.any(), getCollenctions);
 routerRag.post('/create-collection', upload.any(), createCollection);
+routerRag.delete('/delete-collection/:name', deleteCollection);
 routerRag.post('/search', searchInVectoreStore);
 routerRag.post('/add-pdf', upload.single('file'), addPdf);
 

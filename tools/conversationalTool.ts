@@ -32,13 +32,10 @@ export const contextMessageTool = tool(
                 if (payload[i]?.sender?.type === 'contact') contextMessages += 'usuario: ' + payload[i].content + '\n';
                 else if (payload[i]?.sender?.type === 'user') contextMessages += 'tu: ' + payload[i].content + '\n';
             }
-            // console.log('CONTEXT: ', userMessages);
-            // console.log(contextMessages)
             return contextMessages;
 
         } catch (error) {
             console.error('❌ Error al obtener contexto:');
-            // console.log(error);
             return 'Sin contexto'
         }
     },

@@ -40,6 +40,33 @@ export const createCollection = async (req: Request, res: Response) => {
   }
 }
 
+export const deleteCollection = async(req: Request, res: Response) => {
+  const { name } = req.params;
+  console.log(name)
+
+  try {
+    await vectorStoreQdrant.getCollection(name).catch((e: any) => {
+      if (e?.status === 404) {
+        throw { status: 404, message: `La colección '${name}' no existe.` };
+      }
+      throw e;
+    });
+
+    await vectorStoreQdrant.deleteCollection(name);
+
+    return res.status(200).json({
+      message: `Colección '${name}' eliminada correctamente.`,
+      name,
+    });
+  } catch (err: any) {
+    console.error(err);
+    if (err?.status === 404) {
+      return res.status(404).json({ error: err.message });
+    }
+    return res.status(500).json({ message: "Error al eliminar la coleccion" });
+  }
+}
+
 export const searchInVectoreStore = async (req: Request, res: Response) => {
   const { query, collectionName } = req.body;
   try {
@@ -113,14 +140,14 @@ export const addPdf = async (req: Request, res: Response) => {
   let filePath: string | undefined;
 
   if (!req.file || !collectionName) {
-    return res.status(400).json({ error: "No se recibió archivo o collectionName." });
+    return res.status(404).json({ error: "No se recibió archivo o collectionName." });
   }
 
   try {
     filePath = req.file.path;
     const exists = await vectorStoreQdrant.getCollections();
     if (exists.collections.some((c: any) => c.name === collectionName)) {
-      return res.status(400).json({
+      return res.status(409).json({
         error: `El identificador de la información ya está en uso. Usa otro identificador.`,
       });
     }
