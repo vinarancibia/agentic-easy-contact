@@ -30,3 +30,5 @@ pm2 start npm --name agentic -- run start
 
 npm run build
 pm2 restart 0
+
+git push production main
