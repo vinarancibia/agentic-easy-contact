@@ -36,7 +36,7 @@ export async function sendMessage({ accountId, conversationId, message, accessTo
     const url = `https://easycontact.top/api/v1/accounts/${accountId}/conversations/${conversationId}/messages`;
     // const accessToken = await getAccessToken({accountId, inboxId});
     const form = new FormData();
-
+    //
     form.append('message_type', 'outgoing');
     form.append('content_type', 'text');
     form.append('content', message);
