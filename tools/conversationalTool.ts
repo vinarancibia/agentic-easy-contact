@@ -16,7 +16,8 @@ export const contextMessageTool = tool(
         const accountId = config.configurable?.accountId;
         const conversationId = config.configurable?.conversationId;
 
-        const url = `https://easycontact.top/api/v1/accounts/${accountId}/conversations/${conversationId}/messages`;
+        const api = process.env.API_EASY_CONTACT;
+        const url = `${api}/api/v1/accounts/${accountId}/conversations/${conversationId}/messages`;
         const apiAccessToken = process.env.API_ACCESS_TOKEN;
 
         try {
@@ -54,7 +55,8 @@ export const contextMessageToolToConfig = tool(
         // const userId = config.configurable?.userId;
         const toolCallId = config.toolCall?.id;
 
-        const url = `https://easycontact.top/api/v1/accounts/${accountId}/conversations/${conversationId}/messages`;
+        const api = process.env.API_EASY_CONTACT;
+        const url = `${api}/api/v1/accounts/${accountId}/conversations/${conversationId}/messages`;
         const apiAccessToken = process.env.API_ACCESS_TOKEN;
 
         try {

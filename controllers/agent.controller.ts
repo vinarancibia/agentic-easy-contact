@@ -10,7 +10,7 @@ const contentStore: ContentStore = {};
 
 export const chatAgent = async (req: Request, res: Response) => {
     const {accountId, inboxId, conversationId, messageType, content, activeAgentBot, customAttributes} = await requestFilter(req.body);    
-    await monitorWebHook(req.body);
+    // await monitorWebHook(req.body);
     const key = `${accountId}:${conversationId}`;
     
     if (messageType === 'incoming' && activeAgentBot && (content.trim() !== '')) {
@@ -23,19 +23,17 @@ export const chatAgent = async (req: Request, res: Response) => {
                 { messages: [{ role: "user", content: contentStore[key].content }] },
                 { configurable: { 
                     thread_id: key,
-                    inboxId, //!produccion
-                    // inboxId: 2, // agentBotId
+                    inboxId,
                     accountId,
                     conversationId,
                     accessToken,
-                    // dynamicPrompt: promptDev.agentePrueba,
-                    dynamicPrompt: prompt, //!produccion
+                    dynamicPrompt: prompt,
                     customAttributes
                 } }
             );
             const message = result.messages[result.messages.length - 1].content as string;
             if(message !== '#') {
-                await sendMessage({accountId, conversationId, message, accessToken}); //!produccion
+                await sendMessage({accountId, conversationId, message, accessToken});
             }
             console.log(`💬(${key}):`, contentStore[key].content);
             console.log("🤖:", message);

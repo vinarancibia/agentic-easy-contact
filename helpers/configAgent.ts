@@ -7,8 +7,9 @@ export async function getPromptAndToken({accountId, inboxId}:{accountId:number, 
     return new Promise(async (resolve, reject) => {
         console.log('<-------- Obteniendo 🧠 Prompt y 🔏 Access Token ---------->');
         try {
-            const url = `https://easycontact.top/platform/api/v1/agent_bots/query?account_id=${accountId}&inbox_id=${inboxId}`;
             const apiAccessTokenPrompt = process.env.API_ACCESS_TOKEN_PROMPT;
+            const api = process.env.API_EASY_CONTACT;
+            const url = `${api}/platform/api/v1/agent_bots/query?account_id=${accountId}&inbox_id=${inboxId}`;
     
             const response = await axios.get(url, {headers: {'api_access_token':apiAccessTokenPrompt}});
             const {prompt, access_token} = response.data;
