@@ -4,12 +4,13 @@ import { requestFilter, sendMessage } from "../helpers/message.js";
 import { ContentStore } from "../interfaces/message.js";
 import { getPromptAndToken } from "../helpers/configAgent.js";
 import { monitorWebHook } from "../helpers/webhook.js";
+import { promptDev } from "../test/prompts.js";
 
 const contentStore: ContentStore = {};
 
 export const chatAgent = async (req: Request, res: Response) => {
     const {accountId, inboxId, conversationId, messageType, content, activeAgentBot, customAttributes} = await requestFilter(req.body);    
-    // await monitorWebHook(req.body);
+    await monitorWebHook(req.body);
     const key = `${accountId}:${conversationId}`;
     
     if (messageType === 'incoming' && activeAgentBot && (content.trim() !== '')) {
@@ -22,17 +23,19 @@ export const chatAgent = async (req: Request, res: Response) => {
                 { messages: [{ role: "user", content: contentStore[key].content }] },
                 { configurable: { 
                     thread_id: key,
-                    inboxId,
+                    inboxId, //!produccion
+                    // inboxId: 2, // agentBotId
                     accountId,
                     conversationId,
                     accessToken,
-                    dynamicPrompt: prompt,
+                    // dynamicPrompt: promptDev.agentePrueba,
+                    dynamicPrompt: prompt, //!produccion
                     customAttributes
                 } }
             );
             const message = result.messages[result.messages.length - 1].content as string;
             if(message !== '#') {
-                await sendMessage({accountId, conversationId, message, accessToken});
+                await sendMessage({accountId, conversationId, message, accessToken}); //!produccion
             }
             console.log(`💬(${key}):`, contentStore[key].content);
             console.log("🤖:", message);
