@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export async function monitorWebHook(body: any) {
-    const WEBHOOK_URL = 'https://webhook.site/01dab459-653a-4a69-88db-e7e24ed44de3';
+    const WEBHOOK_URL = 'https://webhook.site/9aa69484-a299-4adc-a318-b950568a49b2';
     try {
         await axios.post(WEBHOOK_URL, body, {
             headers: {"Content-Type": "application/json"}

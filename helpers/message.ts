@@ -39,10 +39,11 @@ type RequestFilterReturn = {
 }
 
 export async function sendMessage({ accountId, conversationId, message, accessToken, messageSubType = MESSAGE_SUB_TYPE.NONE }: SendMessageProp) {
-    const url = `https://easycontact.top/api/v1/accounts/${accountId}/conversations/${conversationId}/messages`;
+    const api = process.env.API_EASY_CONTACT;
+    const url = `${api}/api/v1/accounts/${accountId}/conversations/${conversationId}/messages`;
     // const accessToken = await getAccessToken({accountId, inboxId});
     const form = new FormData();
-
+    //
     form.append('message_type', 'outgoing');
     form.append('message_sub_type', messageSubType);
     form.append('content_type', 'text');
@@ -64,7 +65,8 @@ export async function sendFile({ accountId, conversationId, fileUrl, accessToken
     return new Promise(async (resolve, reject) => {
         console.log('<------------- sendFile ----------->');
         console.log('FILEURL: ', fileUrl);
-        const url = `https://easycontact.top/api/v1/accounts/${accountId}/conversations/${conversationId}/messages`;
+        const api = process.env.API_EASY_CONTACT;
+        const url = `${api}/api/v1/accounts/${accountId}/conversations/${conversationId}/messages`;
         // const accessToken = await getAccessToken({accountId, inboxId});
         const form = new FormData();
 

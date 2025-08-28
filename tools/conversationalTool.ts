@@ -16,7 +16,8 @@ export const contextMessageTool = tool(
         const accountId = config.configurable?.accountId;
         const conversationId = config.configurable?.conversationId;
 
-        const url = `https://easycontact.top/api/v1/accounts/${accountId}/conversations/${conversationId}/messages`;
+        const api = process.env.API_EASY_CONTACT;
+        const url = `${api}/api/v1/accounts/${accountId}/conversations/${conversationId}/messages`;
         const apiAccessToken = process.env.API_ACCESS_TOKEN;
 
         try {
@@ -33,13 +34,10 @@ export const contextMessageTool = tool(
                 if (payload[i]?.sender?.type === 'contact') contextMessages += 'usuario: ' + payload[i].content + '\n';
                 else if (usersOutgoing.includes(payload[i]?.sender?.type)) contextMessages += 'tu: ' + payload[i].content + '\n';
             }
-            // console.log('CONTEXT: ', userMessages); 
-            // console.log(contextMessages)
             return contextMessages;
 
         } catch (error) {
             console.error('❌ Error al obtener contexto:');
-            // console.log(error);
             return 'Sin contexto'
         }
     },
@@ -58,7 +56,8 @@ export const contextMessageToolToConfig = tool(
         // const userId = config.configurable?.userId;
         const toolCallId = config.toolCall?.id;
 
-        const url = `https://easycontact.top/api/v1/accounts/${accountId}/conversations/${conversationId}/messages`;
+        const api = process.env.API_EASY_CONTACT;
+        const url = `${api}/api/v1/accounts/${accountId}/conversations/${conversationId}/messages`;
         const apiAccessToken = process.env.API_ACCESS_TOKEN;
 
         try {

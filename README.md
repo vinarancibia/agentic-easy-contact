@@ -22,3 +22,13 @@ nodemon build/app.js
 3. Que el cliente pueda pasar una foto y que el agente pueda entender la imagen y extraiga la informacion para pasar la info al agente de soporte
 4. que el promp sea parametrizable.
 5. Agendar reuniones con Google Calendar (Ver MCP que manejen calendarios Google y Microsoft).
+
+
+Para ejecutar el servicio en produccion
+pm2 start npm --name agentic -- run start
+
+
+npm run build
+pm2 restart 0
+
+git push production main

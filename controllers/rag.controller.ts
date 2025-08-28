@@ -9,45 +9,79 @@ import dotenv from 'dotenv';
 import { Document } from "langchain/document";
 dotenv.config()
 
+interface Collection {
+  name: string
+}
 export const getCollenctions = async (req: Request, res: Response) => {
-    try {
-        const result = await vectorStoreQdrant.getCollections();
-        res.json({ colecciones: result.collections });
-    } catch (err) {
-        console.error(err);
-        res.json({ message: "Error al obtener las colecciones" });
-    }
+  try {
+    const prefix = `3-2-`;
+    const { collections }: { collections: Collection[] } = await vectorStoreQdrant.getCollections();
+    const collectionNames = collections.map(c => c.name);
+    const collectionFilter = collectionNames.filter(name => name.startsWith(prefix));
+    const listCollection = collectionFilter.map(name => name.slice(prefix.length));
+    res.json({ files: [...listCollection] });
+  } catch (err) {
+    console.error(err);
+    res.json({ message: "Error al obtener las colecciones" });
+  }
 }
 
 export const createCollection = async (req: Request, res: Response) => {
-    const { nameCollection } = req.body;
+  const { nameCollection } = req.body;
 
-    try {
-        await vectorStoreQdrant.createCollection(nameCollection, {
-            vectors: { size: 4, distance: "Dot" },
-        });
-        res.json({ message: `La coleccion ${nameCollection} se creo exitosamente` });
-    } catch (err) {
-        console.error(err);
-        res.json({ message: "Error al crear la coleccion" });
+  try {
+    await vectorStoreQdrant.createCollection(nameCollection, {
+      vectors: { size: 4, distance: "Dot" },
+    });
+    res.json({ message: `La coleccion ${nameCollection} se creo exitosamente` });
+  } catch (err) {
+    console.error(err);
+    res.json({ message: "Error al crear la coleccion" });
+  }
+}
+
+export const deleteCollection = async(req: Request, res: Response) => {
+  const { name } = req.params;
+  console.log(name)
+
+  try {
+    await vectorStoreQdrant.getCollection(name).catch((e: any) => {
+      if (e?.status === 404) {
+        throw { status: 404, message: `La colección '${name}' no existe.` };
+      }
+      throw e;
+    });
+
+    await vectorStoreQdrant.deleteCollection(name);
+
+    return res.status(200).json({
+      message: `Colección '${name}' eliminada correctamente.`,
+      name,
+    });
+  } catch (err: any) {
+    console.error(err);
+    if (err?.status === 404) {
+      return res.status(404).json({ error: err.message });
     }
+    return res.status(500).json({ message: "Error al eliminar la coleccion" });
+  }
 }
 
 export const searchInVectoreStore = async (req: Request, res: Response) => {
-    const { query, collectionName } = req.body;
-    try {
-        const embeddings = new OpenAIEmbeddings({
-            model: "text-embedding-3-large",
-        });
-        const vectorStore = await QdrantVectorStore.fromExistingCollection(embeddings, {
-            url: process.env.QDRANT_URL,
-            collectionName
-        })
-        const result = await vectorStore.similaritySearch(query)
-        return res.json({ query, result })
-    } catch (error) {
-        return res.status(500).json({ error: 'Error al hacer la busqueda.' });
-    }
+  const { query, collectionName } = req.body;
+  try {
+    const embeddings = new OpenAIEmbeddings({
+      model: "text-embedding-3-large",
+    });
+    const vectorStore = await QdrantVectorStore.fromExistingCollection(embeddings, {
+      url: process.env.QDRANT_URL,
+      collectionName
+    })
+    const result = await vectorStore.similaritySearch(query)
+    return res.json({ query, result })
+  } catch (error) {
+    return res.status(500).json({ error: 'Error al hacer la busqueda.' });
+  }
 }
 
 // export const addPdf = async (req: Request, res: Response) => {
@@ -106,14 +140,14 @@ export const addPdf = async (req: Request, res: Response) => {
   let filePath: string | undefined;
 
   if (!req.file || !collectionName) {
-    return res.status(400).json({ error: "No se recibió archivo o collectionName." });
+    return res.status(404).json({ error: "No se recibió archivo o collectionName." });
   }
 
   try {
     filePath = req.file.path;
     const exists = await vectorStoreQdrant.getCollections();
-    if (exists.collections.some((c:any) => c.name === collectionName)) {
-      return res.status(400).json({
+    if (exists.collections.some((c: any) => c.name === collectionName)) {
+      return res.status(409).json({
         error: `El identificador de la información ya está en uso. Usa otro identificador.`,
       });
     }

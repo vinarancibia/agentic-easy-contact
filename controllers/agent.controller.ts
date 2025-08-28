@@ -4,6 +4,7 @@ import { requestFilter, sendMessage } from "../helpers/message.js";
 import { ContentStore } from "../interfaces/message.js";
 import { getPromptAndToken } from "../helpers/configAgent.js";
 import { monitorWebHook } from "../helpers/webhook.js";
+import { promptDev } from "../test/prompts.js";
 
 const contentStore: ContentStore = {};
 
@@ -22,6 +23,7 @@ export const chatAgent = async (req: Request, res: Response) => {
                 { messages: [{ role: "user", content: contentStore[key].content }] },
                 { configurable: { 
                     thread_id: key,
+                    inboxId,
                     accountId,
                     conversationId,
                     accessToken,
