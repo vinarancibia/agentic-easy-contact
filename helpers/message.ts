@@ -8,10 +8,16 @@ import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 dotenv.config();
 
+export const MESSAGE_SUB_TYPE = {
+    NONE: "none",
+    REMARKETING: "remarketing"
+} as const;
+
 type SendMessageProp = {
     accountId: number;
     conversationId: number;
     message: string;
+    messageSubType?: string; 
     accessToken: string;
 }
 
@@ -32,12 +38,13 @@ type RequestFilterReturn = {
     customAttributes: {pageUrl:string, todoText: string, pageTitle:string, htmlExcerpt: string};
 }
 
-export async function sendMessage({ accountId, conversationId, message, accessToken }: SendMessageProp) {
+export async function sendMessage({ accountId, conversationId, message, accessToken, messageSubType = MESSAGE_SUB_TYPE.NONE }: SendMessageProp) {
     const url = `https://easycontact.top/api/v1/accounts/${accountId}/conversations/${conversationId}/messages`;
     // const accessToken = await getAccessToken({accountId, inboxId});
     const form = new FormData();
 
     form.append('message_type', 'outgoing');
+    form.append('message_sub_type', messageSubType);
     form.append('content_type', 'text');
     form.append('content', message);
 

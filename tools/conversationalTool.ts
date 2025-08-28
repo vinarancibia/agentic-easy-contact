@@ -28,11 +28,12 @@ export const contextMessageTool = tool(
             })
             const { payload }: { payload: Array<Record<string, any>> } = response.data;
             let contextMessages: string = '';
+            let usersOutgoing = ["user", "agent_bot"]
             for (let i = 0; i < payload.length; i++) {
                 if (payload[i]?.sender?.type === 'contact') contextMessages += 'usuario: ' + payload[i].content + '\n';
-                else if (payload[i]?.sender?.type === 'user') contextMessages += 'tu: ' + payload[i].content + '\n';
+                else if (usersOutgoing.includes(payload[i]?.sender?.type)) contextMessages += 'tu: ' + payload[i].content + '\n';
             }
-            // console.log('CONTEXT: ', userMessages);
+            // console.log('CONTEXT: ', userMessages); 
             // console.log(contextMessages)
             return contextMessages;
 
