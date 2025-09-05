@@ -16,8 +16,8 @@ export const searchInfoOnCollection = tool(async (input, config) => {
     console.log('<------------- searchInfoOnCollection ----------->');
     const { collectionName, query } = input;
     const accountId = config.configurable?.accountId;
-    const agentId = config.configurable?.inboxId;
-    const prefix = `${accountId}-${agentId}-`;
+    const agentBotId = config.configurable?.agentBotId;
+    const prefix = `${accountId}-${agentBotId}-`;
     const embeddings = new OpenAIEmbeddings({model: "text-embedding-3-large"});
     const vectorStore = await QdrantVectorStore.fromExistingCollection(embeddings, {
         url: process.env.QDRANT_URL,
@@ -39,8 +39,8 @@ export const searchInfoOnCollection = tool(async (input, config) => {
 export const getCollectionsVectorStore = tool(async(input, config) => {
     console.log('<------------- getCollectionsVectorStore ----------->');
     const accountId = config.configurable?.accountId;
-    const agentId = config.configurable?.inboxId;
-    const prefix = `${accountId}-${agentId}-`;
+    const agentBotId = config.configurable?.agentBotId;
+    const prefix = `${accountId}-${agentBotId}-`;
     try {
         const {collections}: {collections:Collection[]} = await vectorStoreQdrant.getCollections();
         const collectionNames = collections.map(c => c.name);

@@ -10,11 +10,11 @@ const contentStore: ContentStore = {};
 
 export const chatAgent = async (req: Request, res: Response) => {
     const {accountId, inboxId, conversationId, messageType, content, activeAgentBot, customAttributes} = await requestFilter(req.body);    
-    // await monitorWebHook(req.body);
+    await monitorWebHook(req.body);
     const key = `${accountId}:${conversationId}`;
     
     if (messageType === 'incoming' && activeAgentBot && (content.trim() !== '')) {
-        const {prompt, accessToken} = await getPromptAndToken({accountId, inboxId});
+        const {agentBotId, prompt, accessToken} = await getPromptAndToken({accountId, inboxId});
         if (contentStore[key]) contentStore[key].content += ` ${content}`;
         else contentStore[key] = { content };
         if (contentStore[key].timer) clearTimeout(contentStore[key].timer);
@@ -25,6 +25,7 @@ export const chatAgent = async (req: Request, res: Response) => {
                     thread_id: key,
                     inboxId,
                     accountId,
+                    agentBotId,
                     conversationId,
                     accessToken,
                     dynamicPrompt: prompt,

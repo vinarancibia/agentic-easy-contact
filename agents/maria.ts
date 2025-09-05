@@ -2,7 +2,7 @@ import { ChatOpenAI } from "@langchain/openai";
 import { createReactAgent } from "@langchain/langgraph/prebuilt"
 import { Annotation, MemorySaver, MessagesAnnotation } from '@langchain/langgraph';
 import { contextMessageTool, getCurrentDateTimeTool, greetingsListTool } from "../tools/conversationalTool.js";
-import { consultCatalogTool, consultCodeCatalogTool, consultImageCatalogTool } from "../tools/consultTool.js";
+import { consultCatalogTool, sendImageCatalogTool } from "../tools/consultTool.js";
 import z from "zod";
 import { RunnableConfig } from "@langchain/core/runnables";
 import { BaseMessageLike } from "@langchain/core/messages";
@@ -40,8 +40,7 @@ const agentMaria = createReactAgent({
             getCurrentDateTimeTool,
             greetingsListTool,
             consultCatalogTool,
-            consultImageCatalogTool,
-            consultCodeCatalogTool,
+            sendImageCatalogTool,
             searchInfoOnCollection,
             getCollectionsVectorStore,
             webInformationTool

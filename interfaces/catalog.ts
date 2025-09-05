@@ -1,0 +1,36 @@
+export interface Catalog {
+    codigo: string;
+    nombre: string;
+    descripcion: string;
+    descripcion_larga: string;
+    categoria2: string;
+    subcategoria: string;
+    precio: string;
+    moneda: string;
+    unidad_medida: string;
+    presentacion: string;
+    stock_disponible: string;
+    stock_minimo: string;
+    descuento: string;
+    precio_oferta: string;
+    impuesto: string;
+    estado: string;
+    marca: string;
+    proveedor: string;
+    codigo_barras: string;
+    imagen_url: string;
+    galeria_imagenes: string;
+    ficha_tecnica_url: string;
+    manual_url: string;
+    video_url: string;
+    pais_origen: string;
+    garantia: string;
+    fecha_creacion: string;
+    fecha_actualizacion: string;
+    etiquetas: string;
+    politicas_envio: string;
+    politicas_devolucion: string;
+    variantes: string;
+    relacionados: string;
+    ratings: string;
+}
